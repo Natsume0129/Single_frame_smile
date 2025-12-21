@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Image Label Tool</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
+    body { margin: 0; padding: 16px; background: #0b0f14; color: #e8eef6; }
+    .wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 12px; }
+    .topbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .card { background: #121a23; border: 1px solid #223044; border-radius: 12px; padding: 12px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .btn { cursor: pointer; border: 1px solid #2a3a52; background: #172233; color: #e8eef6; padding: 10px 12px; border-radius: 10px; font-weight: 600; }
+    .btn:hover { background: #1c2a40; }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { border-color: #3d6ea8; }
+    .btn.warn { border-color: #a86a3d; }
+    .btn.good { border-color: #3da86a; }
+    .btn.danger { border-color: #a83d3d; }
+    .muted { color: #9fb3c8; font-size: 13px; }
+    .kv { display: grid; grid-template-columns: 120px 1fr; gap: 6px 10px; }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 1px solid #2a3a52; font-size: 12px; }
+    .imgbox { display: grid; place-items: center; background: #0b0f14; border: 1px solid #223044; border-radius: 12px; padding: 8px; min-height: 520px; }
+    img { max-width: 100%; max-height: 72vh; object-fit: contain; border-radius: 8px; }
+    .footer { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+           font-size: 12px; padding: 2px 6px; border: 1px solid #2a3a52; border-bottom-width: 2px;
+           border-radius: 6px; background: #0f1620; }
+    .spacer { flex: 1; }
+    .stat { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .progress { height: 10px; background: #0f1620; border: 1px solid #223044; border-radius: 999px; overflow: hidden; }
+    .bar { height: 100%; width: 0%; background: #3d6ea8; }
+    .hint { line-height: 1.6; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card topbar">
+      <div class="row">
+        <label class="btn primary" for="folderInput">Select Folder</label>
+        <input id="folderInput" type="file" webkitdirectory multiple accept="image/*" style="display:none" />
+        <button id="shuffleBtn" class="btn warn" type="button" disabled>Reshuffle</button>
+        <button id="exportBtn" class="btn good" type="button" disabled>Export .dat</button>
+        <button id="clearBtn" class="btn danger" type="button" disabled>Clear Labels</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="stat">
+        <span class="pill" id="countPill">Not loaded</span>
+        <span class="pill" id="donePill">Labeled: 0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="kv">
+        <div class="muted">Current File</div>
+        <div id="filePath" style="word-break: break-all;">-</div>
+
+        <div class="muted">Current Label</div>
+        <div>
+          <span class="pill" id="currentLabelPill">Unlabeled</span>
+        </div>
+
+        <div class="muted">Progress</div>
+        <div>
+          <div class="progress" aria-label="progress">
+            <div class="bar" id="progressBar"></div>
+          </div>
+          <div class="muted" id="progressText" style="margin-top:6px;">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="imgbox">
+        <img id="preview" alt="preview" />
+      </div>
+    </div>
+
+    <div class="card footer">
+      <div class="row">
+        <button class="btn" id="btnTrue" type="button">true_smile <span class="kbd">Q</span></button>
+        <button class="btn" id="btnNot" type="button">not_smile <span class="kbd">P</span></button>
+        <button class="btn" id="btnOther" type="button">other_smile <span class="kbd">Space</span></button>
+        <button class="btn" id="btnPrev" type="button">Previous <span class="kbd">Backspace</span></button>
+        <button class="btn" id="btnNext" type="button">Next <span class="kbd">→</span></button>
+      </div>
+
+      <div class="muted hint">
+        Keys: <span class="kbd">Q</span>=true_smile, <span class="kbd">P</span>=not_smile, <span class="kbd">Space</span>=other_smile,
+        <span class="kbd">Backspace</span>=previous. Auto-next after labeling.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Utilities =====
+    const isImageFile = (f) => {
+      if (f.type && f.type.startsWith("image/")) return true;
+      const name = (f.name || "").toLowerCase();
+      return /\.(png|jpg|jpeg|webp|gif|bmp|tif|tiff)$/i.test(name);
+    };
+
+    // Fisher-Yates shuffle (in-place)
+    const shuffleInPlace = (arr) => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
+    const downloadText = (filename, text) => {
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+
+    // ===== State =====
+    let files = [];               // Array<File>
+    let order = [];               // Array<number> indices into files
+    let idx = 0;                  // current position in order
+    let labels = new Map();       // key: path string, value: label
+    let currentObjectUrl = null;  // to revoke when switching images
+
+    // Key = relative path if possible, else filename
+    const getPathKey = (file) => file.webkitRelativePath || file.name;
+
+    const LABEL_TRUE = "true_smile";
+    const LABEL_NOT  = "not_smile";
+    const LABEL_OTHER= "other_smile";
+
+    // ===== Elements =====
+    const folderInput = document.getElementById("folderInput");
+    const shuffleBtn  = document.getElementById("shuffleBtn");
+    const exportBtn   = document.getElementById("exportBtn");
+    const clearBtn    = document.getElementById("clearBtn");
+
+    const btnTrue = document.getElementById("btnTrue");
+    const btnNot  = document.getElementById("btnNot");
+    const btnOther= document.getElementById("btnOther");
+    const btnPrev = document.getElementById("btnPrev");
+    const btnNext = document.getElementById("btnNext");
+
+    const preview   = document.getElementById("preview");
+    const filePath  = document.getElementById("filePath");
+    const currentLabelPill = document.getElementById("currentLabelPill");
+    const countPill = document.getElementById("countPill");
+    const donePill  = document.getElementById("donePill");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+
+    // ===== UI updates =====
+    const updateTopStats = () => {
+      countPill.textContent = files.length ? `Images: ${files.length}` : "Not loaded";
+      donePill.textContent = `Labeled: ${labels.size}`;
+      shuffleBtn.disabled = files.length === 0;
+      exportBtn.disabled = files.length === 0;
+      clearBtn.disabled = files.length === 0;
+      const p = files.length ? Math.round((labels.size / files.length) * 100) : 0;
+      progressBar.style.width = `${p}%`;
+    };
+
+    const setCurrentLabelPill = (label) => {
+      if (!label) {
+        currentLabelPill.textContent = "Unlabeled";
+        currentLabelPill.style.borderColor = "#2a3a52";
+        return;
+      }
+      currentLabelPill.textContent = label;
+      if (label === LABEL_TRUE) currentLabelPill.style.borderColor = "#3da86a";
+      else if (label === LABEL_NOT) currentLabelPill.style.borderColor = "#a83d3d";
+      else currentLabelPill.style.borderColor = "#a86a3d";
+    };
+
+    const renderCurrent = () => {
+      if (!files.length) {
+        filePath.textContent = "-";
+        progressText.textContent = "-";
+        preview.removeAttribute("src");
+        setCurrentLabelPill(null);
+        updateTopStats();
+        return;
+      }
+
+      if (idx < 0) idx = 0;
+      if (idx >= order.length) idx = order.length - 1;
+
+      const file = files[order[idx]];
+      const key = getPathKey(file);
+
+      filePath.textContent = key;
+      progressText.textContent = `Image ${idx + 1} / ${order.length}`;
+
+      setCurrentLabelPill(labels.get(key) || null);
+
+      if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+      currentObjectUrl = URL.createObjectURL(file);
+      preview.src = currentObjectUrl;
+
+      updateTopStats();
+    };
+
+    // ===== Actions =====
+    const goNext = () => {
+      if (!files.length) return;
+      if (idx < order.length - 1) idx++;
+      renderCurrent();
+    };
+
+    const goPrev = () => {
+      if (!files.length) return;
+      if (idx > 0) idx--;
+      renderCurrent();
+    };
+
+    const applyLabel = (label) => {
+      if (!files.length) return;
+      const file = files[order[idx]];
+      const key = getPathKey(file);
+      labels.set(key, label);
+
+      // show updated label immediately
+      renderCurrent();
+
+      // auto-next after labeling
+      if (idx < order.length - 1) {
+        idx++;
+        renderCurrent();
+      }
+    };
+
+    const exportDat = () => {
+      if (!files.length) return;
+
+      // One line per image: "<path> <label>"
+      // If unlabeled, label part is empty.
+      const lines = [];
+      for (const i of order) {
+        const f = files[i];
+        const key = getPathKey(f);
+        const label = labels.get(key) || "";
+        lines.push(`${key} ${label}`.trimEnd());
+      }
+      downloadText("labels.dat", lines.join("\n"));
+    };
+
+    const clearAll = () => {
+      labels = new Map();
+      renderCurrent();
+    };
+
+    const reshuffle = () => {
+      if (!files.length) return;
+      order = shuffleInPlace(order);
+      idx = 0;
+      renderCurrent();
+    };
+
+    // ===== Events =====
+    folderInput.addEventListener("change", (e) => {
+      const picked = Array.from(e.target.files || []).filter(isImageFile);
+
+      files = picked;
+      order = files.map((_, i) => i);
+      shuffleInPlace(order);
+
+      idx = 0;
+      labels = new Map();
+      renderCurrent();
+    });
+
+    shuffleBtn.addEventListener("click", reshuffle);
+    exportBtn.addEventListener("click", exportDat);
+    clearBtn.addEventListener("click", clearAll);
+
+    btnTrue.addEventListener("click", () => applyLabel(LABEL_TRUE));
+    btnNot.addEventListener("click", () => applyLabel(LABEL_NOT));
+    btnOther.addEventListener("click", () => applyLabel(LABEL_OTHER));
+    btnPrev.addEventListener("click", goPrev);
+    btnNext.addEventListener("click", goNext);
+
+    // Keyboard mapping
+    window.addEventListener("keydown", (e) => {
+      const k = e.key;
+
+      // Prevent browser "back" navigation on Backspace
+      if (k === "Backspace") {
+        e.preventDefault();
+        goPrev();
+        return;
+      }
+
+      // Prevent scrolling on Space
+      if (k === " ") {
+        e.preventDefault();
+        applyLabel(LABEL_OTHER);
+        return;
+      }
+
+      if (k === "q" || k === "Q") {
+        e.preventDefault();
+        applyLabel(LABEL_TRUE);
+        return;
+      }
+
+      if (k === "p" || k === "P") {
+        e.preventDefault();
+        applyLabel(LABEL_NOT);
+        return;
+      }
+
+      // Optional: ArrowRight -> Next
+      if (k === "ArrowRight") {
+        e.preventDefault();
+        goNext();
+        return;
+      }
+    });
+
+    // Initial UI
+    renderCurrent();
+  </script>
+</body>
+</html>
