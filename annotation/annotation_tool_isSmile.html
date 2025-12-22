@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Image Label Tool</title>
+  <title>Smile / No-Smile Label Tool</title>
   <style>
     :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
     body { margin: 0; padding: 16px; background: #0b0f14; color: #e8eef6; }
@@ -44,7 +44,7 @@
         <input id="folderInput" type="file" webkitdirectory multiple accept="image/*" style="display:none" />
         <button id="shuffleBtn" class="btn warn" type="button" disabled>Reshuffle</button>
         <button id="exportBtn" class="btn good" type="button" disabled>Export .dat</button>
-        <button id="clearBtn" class="btn danger" type="button" disabled>Clear Labels</button>
+        <button id="clearBtn" class="btn danger" type="button" disabled>Reset</button>
       </div>
       <div class="spacer"></div>
       <div class="stat">
@@ -58,7 +58,7 @@
         <div class="muted">Current File</div>
         <div id="filePath" style="word-break: break-all;">-</div>
 
-        <div class="muted">Current Label</div>
+        <div class="muted">Current Value</div>
         <div>
           <span class="pill" id="currentLabelPill">Unlabeled</span>
         </div>
@@ -81,17 +81,17 @@
 
     <div class="card footer">
       <div class="row">
-        <button class="btn" id="btnTrue" type="button">true_smile <span class="kbd">Q</span></button>
-        <button class="btn" id="btnNot" type="button">not_smile <span class="kbd">P</span></button>
-        <button class="btn" id="btnOther" type="button">other_smile <span class="kbd">Space</span></button>
-        <button class="btn gray" id="btnDiscard" type="button">Discard <span class="kbd">D</span></button>
+        <button class="btn" id="btnSmile" type="button">IsSmiling (1) <span class="kbd">Q</span></button>
+        <button class="btn" id="btnNoSmile" type="button">NotSmiling (0) <span class="kbd">P</span></button>
+        <button class="btn gray" id="btnDiscard" type="button">Discard <span class="kbd">Space</span></button>
         <button class="btn" id="btnPrev" type="button">Previous <span class="kbd">Backspace</span></button>
         <button class="btn" id="btnNext" type="button">Next <span class="kbd">→</span></button>
       </div>
 
       <div class="muted hint">
-        Keys: <span class="kbd">Q</span>=true_smile, <span class="kbd">P</span>=not_smile, <span class="kbd">Space</span>=other_smile,
-        <span class="kbd">D</span>=discard, <span class="kbd">Backspace</span>=previous. Auto-next after labeling/discarding.
+        Keys: <span class="kbd">Q</span>=IsSmiling(1), <span class="kbd">P</span>=NotSmiling(0),
+        <span class="kbd">Space</span>=Discard, <span class="kbd">Backspace</span>=Previous.
+        Auto-next after labeling/discarding.
       </div>
     </div>
   </div>
@@ -129,16 +129,17 @@
     let files = [];               // Array<File>
     let order = [];               // Array<number> indices into files (remaining queue)
     let idx = 0;                  // current position in order
-    let labels = new Map();       // key: path string, value: label (only for non-discarded)
+    let labels = new Map();       // key: path string, value: "1" or "0"
     let discarded = new Set();    // key: path string
     let currentObjectUrl = null;  // to revoke when switching images
 
     // Key = relative path if possible, else filename
     const getPathKey = (file) => file.webkitRelativePath || file.name;
 
-    const LABEL_TRUE = "true_smile";
-    const LABEL_NOT  = "not_smile";
-    const LABEL_OTHER= "other_smile";
+    // IMPORTANT: mapping exactly as corrected:
+    // IsSmiling -> 1, NotSmiling -> 0
+    const VALUE_SMILE = "1";
+    const VALUE_NO_SMILE = "0";
 
     // ===== Elements =====
     const folderInput = document.getElementById("folderInput");
@@ -146,12 +147,11 @@
     const exportBtn   = document.getElementById("exportBtn");
     const clearBtn    = document.getElementById("clearBtn");
 
-    const btnTrue = document.getElementById("btnTrue");
-    const btnNot  = document.getElementById("btnNot");
-    const btnOther= document.getElementById("btnOther");
+    const btnSmile   = document.getElementById("btnSmile");
+    const btnNoSmile = document.getElementById("btnNoSmile");
     const btnDiscard = document.getElementById("btnDiscard");
-    const btnPrev = document.getElementById("btnPrev");
-    const btnNext = document.getElementById("btnNext");
+    const btnPrev    = document.getElementById("btnPrev");
+    const btnNext    = document.getElementById("btnNext");
 
     const preview   = document.getElementById("preview");
     const filePath  = document.getElementById("filePath");
@@ -180,22 +180,20 @@
       exportBtn.disabled = false;
       clearBtn.disabled = false;
 
-      // Progress over remaining queue (labeled / remaining). Unlabeled remaining reduces progress.
       const denom = order.length || 0;
       const p = denom ? Math.round((labels.size / denom) * 100) : 100;
       progressBar.style.width = `${p}%`;
     };
 
-    const setCurrentLabelPill = (label) => {
-      if (!label) {
+    const setCurrentLabelPill = (value) => {
+      if (!value) {
         currentLabelPill.textContent = "Unlabeled";
         currentLabelPill.style.borderColor = "#2a3a52";
         return;
       }
-      currentLabelPill.textContent = label;
-      if (label === LABEL_TRUE) currentLabelPill.style.borderColor = "#3da86a";
-      else if (label === LABEL_NOT) currentLabelPill.style.borderColor = "#a83d3d";
-      else currentLabelPill.style.borderColor = "#a86a3d";
+      const txt = value === VALUE_SMILE ? "IsSmiling (1)" : "NotSmiling (0)";
+      currentLabelPill.textContent = txt;
+      currentLabelPill.style.borderColor = (value === VALUE_SMILE) ? "#3da86a" : "#a83d3d";
     };
 
     const renderCurrent = () => {
@@ -239,20 +237,16 @@
       renderCurrent();
     };
 
-    const applyLabel = (label) => {
+    const applyValue = (value) => {
       if (!files.length || !order.length) return;
       const file = files[order[idx]];
       const key = getPathKey(file);
 
-      // if previously discarded somehow, undo discard (safe-guard)
-      if (discarded.has(key)) discarded.delete(key);
+      discarded.delete(key);
+      labels.set(key, value);
 
-      labels.set(key, label);
-
-      // show updated label immediately
       renderCurrent();
 
-      // auto-next after labeling
       if (idx < order.length - 1) {
         idx++;
         renderCurrent();
@@ -266,16 +260,13 @@
       const file = files[currentIndexInFiles];
       const key = getPathKey(file);
 
-      // mark discarded, remove any label
       discarded.add(key);
       labels.delete(key);
 
-      // remove from remaining queue
+      // Remove from remaining queue
       order.splice(idx, 1);
 
-      // keep idx pointing to the "next" item (same idx), or step back if we removed the last item
       if (idx >= order.length) idx = order.length - 1;
-
       renderCurrent();
     };
 
@@ -283,22 +274,21 @@
       if (!files.length) return;
 
       // Export ONLY remaining (non-discarded) images.
-      // One line per image: "<path> <label>"
-      // If unlabeled, label part is empty.
+      // One line per image: "<path> <value>"
+      // If unlabeled, value part is empty.
       const lines = [];
       for (const i of order) {
         const f = files[i];
         const key = getPathKey(f);
-        const label = labels.get(key) || "";
-        lines.push(`${key} ${label}`.trimEnd());
+        const value = labels.get(key) || "";
+        lines.push(`${key} ${value}`.trimEnd());
       }
       downloadText("labels.dat", lines.join("\n"));
     };
 
-    const clearAll = () => {
+    const resetAll = () => {
       labels = new Map();
       discarded = new Set();
-      // Reset order to all files, reshuffled (still random, not sorted)
       order = files.map((_, i) => i);
       shuffleInPlace(order);
       idx = 0;
@@ -307,7 +297,6 @@
 
     const reshuffle = () => {
       if (!files.length) return;
-      // reshuffle remaining queue only
       order = shuffleInPlace(order);
       idx = 0;
       renderCurrent();
@@ -329,11 +318,10 @@
 
     shuffleBtn.addEventListener("click", reshuffle);
     exportBtn.addEventListener("click", exportDat);
-    clearBtn.addEventListener("click", clearAll);
+    clearBtn.addEventListener("click", resetAll);
 
-    btnTrue.addEventListener("click", () => applyLabel(LABEL_TRUE));
-    btnNot.addEventListener("click", () => applyLabel(LABEL_NOT));
-    btnOther.addEventListener("click", () => applyLabel(LABEL_OTHER));
+    btnSmile.addEventListener("click", () => applyValue(VALUE_SMILE));
+    btnNoSmile.addEventListener("click", () => applyValue(VALUE_NO_SMILE));
     btnDiscard.addEventListener("click", discardCurrent);
     btnPrev.addEventListener("click", goPrev);
     btnNext.addEventListener("click", goNext);
@@ -342,39 +330,35 @@
     window.addEventListener("keydown", (e) => {
       const k = e.key;
 
-      // Prevent browser "back" navigation on Backspace
+      // Backspace: previous (prevent browser back navigation)
       if (k === "Backspace") {
         e.preventDefault();
         goPrev();
         return;
       }
 
-      // Prevent scrolling on Space
+      // Space: discard (prevent scroll)
       if (k === " ") {
-        e.preventDefault();
-        applyLabel(LABEL_OTHER);
-        return;
-      }
-
-      if (k === "q" || k === "Q") {
-        e.preventDefault();
-        applyLabel(LABEL_TRUE);
-        return;
-      }
-
-      if (k === "p" || k === "P") {
-        e.preventDefault();
-        applyLabel(LABEL_NOT);d 
-        return;
-      }
-
-      if (k === "d" || k === "D") {
         e.preventDefault();
         discardCurrent();
         return;
       }
 
-      // Optional: ArrowRight -> Next
+      // Q: IsSmiling -> 1
+      if (k === "q" || k === "Q") {
+        e.preventDefault();
+        applyValue(VALUE_SMILE);
+        return;
+      }
+
+      // P: NotSmiling -> 0
+      if (k === "p" || k === "P") {
+        e.preventDefault();
+        applyValue(VALUE_NO_SMILE);
+        return;
+      }
+
+      // Optional: ArrowRight -> Next (manual skip without labeling)
       if (k === "ArrowRight") {
         e.preventDefault();
         goNext();

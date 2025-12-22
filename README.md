@@ -105,6 +105,17 @@ relative_path label
 
 ---
 
+### 2.5 更新：
+Press D → discard current image (removed from the annotation queue, not exported)
+
+A Discard button
+
+UI stats updated to show Loaded / Remaining / Labeled / Discarded
+
+Hint text updated to include D
+
+
+
 ## 3. 数据准备脚本
 
 ### 3.1 data_prepare.py
@@ -267,3 +278,10 @@ relative_path label
 * 单帧笑容分类实验
 * 预标注 / 正式标注阶段切换
 * 不同采样策略的对比实验
+---
+12-22
+我想要分别一张图是真笑和假笑。
+但是我发现有很多的照片我是没有办法分辨的。
+所以针对这个，我在想。
+先识别出这个人在笑再说。
+
