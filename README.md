@@ -285,3 +285,34 @@ Hint text updated to include D
 所以针对这个，我在想。
 先识别出这个人在笑再说。
 
+
+
+12-23:
+我标注的图片的来源是我之前的笑容片段。
+我发现，即使数据源是笑容片段，还是有非常多的单帧数据被我标注为没有在笑。
+不同人其实对同一张图片的认知其实是不同的
+所以在打标的时候，是不是用投票机制会好一点？
+我自己用了voting
+
+增加了voting脚本
+
+不要在全量数据上先删再切分。正确做法是：
+
+先切分
+
+只对 train 做下采样/增强
+
+val/test 保持原分布（否则评估失真）
+
+所以是数据清洗之后拆分，然后做下采样和增强
+
+0 448条 
+1 254条
+
+路径需要对齐
+
+
+cd E:\Single_frame_smile
+python -m venv .venv
+.\.venv\Scripts\activate
+python -m pip install --upgrade pip
