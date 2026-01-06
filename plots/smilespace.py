@@ -50,22 +50,22 @@ t_plot = np.linspace(0, 1, 200)
 pts_black = np.array([curve_black(t) for t in t_plot])
 ax.plot(pts_black[:,0], pts_black[:,1], pts_black[:,2], color='black', linewidth=2)
 ax.text(0, 0, -0.1, "v0", color='black', fontweight='bold')
-ax.text(0, 0, 1.6, "v1", color='black', fontweight='bold')
+ax.text(0, 0, 2.1, "true smile", color='black', fontweight='bold')
 
 # 2. 绘制红色抛物线
 pts_red = np.array([curve_red(t) for t in t_plot])
 ax.plot(pts_red[:,0], pts_red[:,1], pts_red[:,2], color='red')
-ax.text(pts_red[-1,0], pts_red[-1,1], pts_red[-1,2]+0.1, "v1", color='red')
+ax.text(pts_red[-1,0], pts_red[-1,1], pts_red[-1,2]+0.1, "feature 3", color='red')
 
 # 3. 绘制绿色正弦线
 pts_green = np.array([curve_green(t) for t in t_plot])
 ax.plot(pts_green[:,0], pts_green[:,1], pts_green[:,2], color='green')
-ax.text(pts_green[-1,0], pts_green[-1,1], pts_green[-1,2]+0.1, "v2", color='green')
+ax.text(pts_green[-1,0], pts_green[-1,1], pts_green[-1,2]+0.1, "feature 1", color='green')
 
 # 4. 绘制蓝色直线
 pts_blue = np.array([curve_blue(t) for t in t_plot])
 ax.plot(pts_blue[:,0], pts_blue[:,1], pts_blue[:,2], color='blue')
-ax.text(pts_blue[-1,0], pts_blue[-1,1], pts_blue[-1,2]+0.1, "v3", color='blue')
+ax.text(pts_blue[-1,0], pts_blue[-1,1], pts_blue[-1,2]+0.1, "feature 2", color='blue')
 
 # --- 随机点生成 ---
 
@@ -77,8 +77,20 @@ rand_point = np.array([
 ])
 
 # 绘制随机点
+# 1. 生成随机坐标：确保 Z 轴大于 1.3
+# 考虑到高处曲线向外扩张，X 和 Y 的范围稍微扩大（-0.4 到 0.4），让点保持在“内部”
+rand_x = np.random.uniform(-0.4, 0.4)
+rand_y = np.random.uniform(-0.4, 0.4)
+rand_z = np.random.uniform(1.3, 1.8)  # 这里的 1.3 满足了你的硬性要求
+rand_point = np.array([rand_x, rand_y, rand_z])
+
+# 2. 绘制笑容点
+# s=120 确保点足够大，zorder=10 确保它在最上层显示
 ax.scatter(*rand_point, color='magenta', s=120, zorder=10)
-ax.text(rand_point[0], rand_point[1], rand_point[2]+0.15, "a random smile", 
+
+# 3. 标注文字 "a random smile"
+# 将 Z 轴偏移量设为 0.1，防止文字离点太远或超出画面顶部
+ax.text(rand_point[0], rand_point[1], rand_point[2] + 0.1, "a random smile", 
         color='magenta', fontsize=12, ha='center', fontweight='bold')
 
 # --- 执行严谨投影并画虚线 ---
@@ -105,6 +117,7 @@ ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 ax.set_title('Smile Space for demonstration', fontsize=16)
 ax.view_init(elev=20, azim=35)
+
 
 # 保持比例尺一致防止视觉扭曲
 ax.set_box_aspect([1,1,1]) 
