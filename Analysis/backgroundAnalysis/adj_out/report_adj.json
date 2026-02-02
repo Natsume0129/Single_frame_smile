@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "T": 329,
+    "D": 4096,
+    "bg_pt": "E:\\Matsuda_data\\手动标注( vgg-face分析)\\features\\vggface_fc7_20251029_9-12-9-21_0_0_withbg.pt",
+    "rvm_pt": "E:\\Matsuda_data\\手动标注( vgg-face分析)\\features\\vggface_fc7_20251029_9-12-9-21_0_0.pt"
+  },
+  "adjacent_bg": {
+    "bg_adj_mean": 0.034877266734838486,
+    "bg_adj_median": 0.008672475814819336,
+    "bg_adj_p95": 0.19755010306835175,
+    "bg_adj_p99": 0.24389110505580902,
+    "bg_adj_min": 0.0012283921241760254,
+    "bg_adj_max": 0.2600870132446289
+  },
+  "adjacent_rvm": {
+    "rvm_adj_mean": 0.03424355015158653,
+    "rvm_adj_median": 0.007780313491821289,
+    "rvm_adj_p95": 0.21354953944683075,
+    "rvm_adj_p99": 0.2728837728500366,
+    "rvm_adj_min": 0.0009388923645019531,
+    "rvm_adj_max": 0.29548972845077515
+  }
+}

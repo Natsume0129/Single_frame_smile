@@ -7,12 +7,14 @@
 ### 1️⃣ 命令行
 
 ```bash
-python compare_fc7_pt.py \
-  --bg_pt "E:\Matsuda_data\手动标注( vgg-face分析)\features\vggface_fc7_20251029_9-12-9-21_0_0.pt" \
-  --rvm_pt p"E:\Matsuda_data\手动标注( vgg-face分析)\features\vggface_fc7_20251029_9-12-9-21_0_0_withbg.pt" \
-  --out_dir compare_out \
+python compare_fc7_pt.py 
+  --bg_pt "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0_withbg_gap512.pt" 
+  --rvm_pt "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0_rvm_gap512.pt" 
+  --out_dir compare_out 
   --k 20
 ```
+paste as one line
+
 
 ### 2️⃣ 前提（不满足会直接报错）
 
