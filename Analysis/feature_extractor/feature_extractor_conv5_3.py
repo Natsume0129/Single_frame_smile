@@ -10,14 +10,26 @@ from PIL import Image
 from torchvision import transforms
 
 import face_comp_torch as FCmodel
+import re
 
+def extract_last_int(path: Path) -> int:
+    # 从文件名（不含扩展名）提取最后一个整数，作为帧号
+    stem = path.stem
+    m = re.search(r"(\d+)(?!.*\d)", stem)
+    if not m:
+        raise RuntimeError(f"Cannot parse frame index from filename: {path.name}")
+    return int(m.group(1))
 
 class ImageFolderDataset(Dataset):
     def __init__(self, img_dir: str, transform=None, exts=(".jpg", ".jpeg", ".png", ".bmp")):
         self.img_dir = Path(img_dir)
-        self.paths = sorted([p for p in self.img_dir.iterdir() if p.is_file() and p.suffix.lower() in exts])
-        if len(self.paths) == 0:
+        paths = [p for p in self.img_dir.iterdir() if p.is_file() and p.suffix.lower() in exts]
+        if len(paths) == 0:
             raise RuntimeError(f"No images found in: {img_dir}")
+
+        # 关键：按“帧号数值”排序，而不是字典序
+        self.paths = sorted(paths, key=extract_last_int)
+
         self.transform = transform
 
     def __len__(self):

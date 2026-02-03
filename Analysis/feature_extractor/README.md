@@ -162,8 +162,8 @@ python feature_extractor_fc7.py `
 ```powershell
 python feature_extractor_conv5_3.py `
   --weights "E:\Single_frame_smile\data\models\vggface_conv.pth" `
-  --img_dir  "E:\Matsuda_data\手动标注( vgg-face分析)\after_facetracking_withbg\DetectedFaces\20251029_9-12-9-21\0\0" `
-  --save     "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0" `
+  --img_dir  "E:\Matsuda_data\手动标注( vgg-face分析)\after_facetracking\DetectedFaces\20251029_9-12-9-21\0\0" `
+  --save     "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0_rvm" `
   --device "cuda:0"
 ```
 
