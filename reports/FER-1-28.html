@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title></title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <p>this week, My work can be summarized into two parts.</p>
+<p>I completed the featured extractor by reviewing code from shimonishi sensei's previous work.</p>
+<p>and then, I completed vote machinism and did some analysis I mentioned last week.</p>
+<hr>
+<p>firstly, I want to talk about selection of the layers.</p>
+<p>Now, my feature extractor will extract 3 tpyes of feature.</p>
+<p>1, I extract the features from the third convolutional layer of the fifth block
+and considering the output of this is a tensor, so I also did the global average pooling and output will be a 512 d vector.</p>
+<p>and the other layer I chose is the FC 7.</p>
+<p>the reason that I chose these 2 layers is The fc7 layer provides a compact, high-level semantic embedding.
+while conv5_3 preserves richer spatial information that maybe more important for subtle facial expression.</p>
+<p>I dont know which is more appropriate, maybe I need try and analyze both of them.</p>
+<hr>
+<p>and then, Today I want to focus on the results of voting.</p>
+<p>I invited eight people to watch the clips I manually segmented last week.</p>
+<p>I told them the classification criteria beforehand, and asked them to tell me their judgment and the corresponding strength based on their first impression.</p>
+<p>If they couldn't judge, they just need telling me they couldn't judge.</p>
+<hr>
+<p>here is the result.
+The column with &quot;P&quot; followed by a number represents the participant's classification of the segment, and the column on the right represents the corresponding subjective intensity.</p>
+<p>The right side of the table shows the count for each category.</p>
+<p>the X mark here means the case that participant cant identify.</p>
+<p>I find 3 representative pattern and I will show the segments later.
+yellow parts show that almost all of participants judged the segment as a polite.
+green part shows that almost all of participants judged the segment as a truesmile.
+and orange parts show that Some people think the clip is a wry smile, while others think it's a polite smile.
+although, I haven't found any clips that everyone unanimously agrees are showing a bitter smile, there are differences in the yellow and orange categories.</p>
+<p>I think this, in a sense, also proves that there is a difference between a polite smile and a bitter smile.</p>
+<hr>
+<p>Here I have selected several examples with the highest average subjective intensity.</p>
+
+            
+            
+        </body>
+        </html>

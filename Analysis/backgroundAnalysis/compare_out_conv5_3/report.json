@@ -1,49 +1,49 @@
 {
   "meta": {
-    "T": 329,
+    "T": 209,
     "D": 512,
     "k": 20,
-    "bg_pt": "E:\\Matsuda_data\\手动标注( vgg-face分析)\\features\\20251029_9-12-9-21_0_0_withbg_gap512.pt",
-    "rvm_pt": "E:\\Matsuda_data\\手动标注( vgg-face分析)\\features\\20251029_9-12-9-21_0_0_rvm_gap512.pt"
+    "bg_pt": "E:\\Matsuda_data\\vgg-face_analysis\\classic_segments\\extracted_features_rvm\\ambiguous 1443-1448\\vggface_conv5_3_rvm_gap512.pt",
+    "rvm_pt": "E:\\Matsuda_data\\vgg-face_analysis\\classic_segments\\extracted_features_withbg\\ambigous_1443-1448\\vggface_conv5_3_rvm_gap512.pt"
   },
   "cosine_distance": {
-    "dcos_mean": 0.05532720312476158,
-    "dcos_median": 0.05613750219345093,
-    "dcos_p95": 0.07319753617048264,
-    "dcos_p99": 0.08091225475072861,
-    "dcos_min": 0.037036359310150146,
-    "dcos_max": 0.08621299266815186
+    "dcos_mean": 0.04984864592552185,
+    "dcos_median": 0.04855644702911377,
+    "dcos_p95": 0.061523329466581345,
+    "dcos_p99": 0.07150954753160477,
+    "dcos_min": 0.03676730394363403,
+    "dcos_max": 0.07360684871673584
   },
   "relative_change": {
-    "rchg_mean": 0.3617020845413208,
-    "rchg_median": 0.3630293309688568,
-    "rchg_p95": 0.4072236120700836,
-    "rchg_p99": 0.4183405637741089,
-    "rchg_min": 0.29835817217826843,
-    "rchg_max": 0.42763668298721313
+    "rchg_mean": 0.3136689364910126,
+    "rchg_median": 0.3108588755130768,
+    "rchg_p95": 0.3464565873146057,
+    "rchg_p99": 0.37215590476989746,
+    "rchg_min": 0.26954469084739685,
+    "rchg_max": 0.3768000304698944
   },
   "delta_shift": {
-    "mean_delta_norm": 0.27612122893333435,
-    "delta_pca_pc1_explained": 0.19855280679187923,
-    "delta_pca_pc1_2_explained": 0.3383041919965187
+    "mean_delta_norm": 0.25601306557655334,
+    "delta_pca_pc1_explained": 0.15464072418534466,
+    "delta_pca_pc1_2_explained": 0.2910768407296562
   },
   "temporal_smoothness_bg": {
-    "smooth_bg_mean": 0.13310043513774872,
-    "smooth_bg_median": 0.08234132081270218,
-    "smooth_bg_p95": 0.45991960167884827,
-    "smooth_bg_p99": 0.5124678015708923,
-    "smooth_bg_min": 0.03239598870277405,
-    "smooth_bg_max": 0.5202844738960266
+    "smooth_bg_mean": 0.07943744212388992,
+    "smooth_bg_median": 0.06797712296247482,
+    "smooth_bg_p95": 0.14396901428699493,
+    "smooth_bg_p99": 0.1615191549062729,
+    "smooth_bg_min": 0.03554903715848923,
+    "smooth_bg_max": 0.2549097537994385
   },
   "temporal_smoothness_rvm": {
-    "smooth_rvm_mean": 0.12154075503349304,
-    "smooth_rvm_median": 0.07268641144037247,
-    "smooth_rvm_p95": 0.4493682086467743,
-    "smooth_rvm_p99": 0.49872544407844543,
-    "smooth_rvm_min": 0.028073782101273537,
-    "smooth_rvm_max": 0.5192506909370422
+    "smooth_rvm_mean": 0.08829658478498459,
+    "smooth_rvm_median": 0.07677436619997025,
+    "smooth_rvm_p95": 0.15882648527622223,
+    "smooth_rvm_p99": 0.17688007652759552,
+    "smooth_rvm_min": 0.03776416927576065,
+    "smooth_rvm_max": 0.2440686970949173
   },
-  "knn_overlap_mean": 0.8544073104858398,
+  "knn_overlap_mean": 0.8672248721122742,
   "knn_overlap_median": 0.8999999761581421,
   "knn_overlap_p95": 1.0,
   "knn_overlap_p99": 1.0,

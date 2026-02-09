@@ -1,0 +1,50 @@
+this week, My work can be summarized into two parts.
+
+I completed the featured extractor by reviewing code from shimonishi sensei's previous work.
+
+and then, I completed vote machinism and did some analysis I mentioned last week.
+
+---
+
+firstly, I want to talk about selection of the layers. 
+
+Now, my feature extractor will extract 3 tpyes of feature. 
+
+1, I extract the features from the third convolutional layer of the fifth block
+and considering the output of this is a tensor, so I also did the global average pooling and output will be a 512 d vector. 
+
+and the other layer I chose is the FC 7.
+
+the reason that I chose these 2 layers is The fc7 layer provides a compact, high-level semantic embedding.
+while conv5_3 preserves richer spatial information that maybe more important for subtle facial expression. 
+
+I dont know which is more appropriate, maybe I need try and analyze both of them. 
+
+---
+and then, Today I want to focus on the results of voting.
+
+I invited eight people to watch the clips I manually segmented last week.
+
+I told them the classification criteria beforehand, and asked them to tell me their judgment and the corresponding strength based on their first impression.
+
+If they couldn't judge, they just need telling me they couldn't judge.
+
+---
+here is the result.
+The column with "P" followed by a number represents the participant's classification of the segment, and the column on the right represents the corresponding subjective intensity.
+
+The right side of the table shows the count for each category.
+
+the X mark here means the case that participant cant identify. 
+
+I find 3 representative pattern and I will show the segments later. 
+yellow parts show that almost all of participants judged the segment as a polite. 
+green part shows that almost all of participants judged the segment as a truesmile.
+and orange parts show that Some people think the clip is a wry smile, while others think it's a polite smile.
+although, I haven't found any clips that everyone unanimously agrees are showing a bitter smile, there are differences in the yellow and orange categories.
+
+I think this, in a sense, also proves that there is a difference between a polite smile and a bitter smile.
+
+---
+
+Here I have selected several examples with the highest average subjective intensity.

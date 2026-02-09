@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Matsuda_data"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Single_frame_smile",
+		"chatgpt.openOnStartup": false
+	}
+}

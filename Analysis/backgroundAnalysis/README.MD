@@ -8,9 +8,9 @@
 
 ```bash
 python compare_fc7_pt.py 
-  --bg_pt "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0_withbg_gap512.pt" 
-  --rvm_pt "E:\Matsuda_data\手动标注( vgg-face分析)\features\20251029_9-12-9-21_0_0_rvm_gap512.pt" 
-  --out_dir compare_out 
+  --bg_pt "E:\Matsuda_data\vgg-face_analysis\classic_segments\extracted_features_withbg\ambigous_1443-1448\vggface_fc7_withbg.pt"
+  --rvm_pt "E:\Matsuda_data\vgg-face_analysis\classic_segments\extracted_features_rvm\ambiguous 1443-1448\vggface_fc7_rvm.pt"
+  --out_dir compare_out_fc7
   --k 20
 ```
 paste as one line
@@ -24,7 +24,7 @@ paste as one line
 * 形状等价于：
 
   * `[T, 4096]`
-  * 或 list(T) × `[4096]`
+  * 或 list(T) × `[4096]` 
   * 或 dict 里包着上述 tensor
 
 ---
