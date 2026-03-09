@@ -1,0 +1,32 @@
+{
+  "polite": {
+    "num_sequences": 41,
+    "shape": [
+      20,
+      4096
+    ],
+    "sequence_id": "13",
+    "normalized_frames_dir": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized_frames\\polite\\13",
+    "sampled_frames_json": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized\\polite\\13\\sampled_frames.json"
+  },
+  "truesmile": {
+    "num_sequences": 6,
+    "shape": [
+      20,
+      4096
+    ],
+    "sequence_id": "2",
+    "normalized_frames_dir": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized_frames\\truesmile\\2",
+    "sampled_frames_json": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized\\truesmile\\2\\sampled_frames.json"
+  },
+  "ambiguous": {
+    "num_sequences": 27,
+    "shape": [
+      20,
+      4096
+    ],
+    "sequence_id": "27",
+    "normalized_frames_dir": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized_frames\\ambiguous\\27",
+    "sampled_frames_json": "E:\\Matsuda_data\\2-27meeting\\metrics\\normalized\\ambiguous\\27\\sampled_frames.json"
+  }
+}

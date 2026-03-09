@@ -2,15 +2,28 @@
 
 ## 1. Goal
 
-Based on the existing outputs from `analysis_sequence`, add a new projection analysis centered on a "true-smile axis" to answer two questions:
+Based on the existing outputs from `analysis_sequence`, add a new true-smile-referenced projection analysis and difference analysis.
 
-1. How far does each smile category move along the true-smile axis over time?
-2. How far does each smile category deviate away from the true-smile axis over time?
+All outputs must be separated by prototype trajectory type, at least into:
+
+- Method A outputs
+- Method B outputs
+
+The analysis should answer three main lines:
+
+1. Direct difference line  
+   How large is the difference between a reference class prototype and the other class prototypes at each time point, and how does that difference evolve over time?
+
+2. Along-axis progress line  
+   How far does each class move along the true-smile axis over time?
+
+3. Off-axis deviation line  
+   How far does each class deviate away from the true-smile axis over time?
 
 This analysis must support both prototype definitions:
 
-- Method A: median prototype
-- Method B: medoid prototype
+- Method A: median trajectory
+- Method B: medoid trajectory
 
 Both methods must be treated as parallel primary analyses. For Method B, because the prototype corresponds to a real sequence, the plots should preserve the real `sequence_id` and support visual linkage to the actual frames whenever possible.
 
@@ -74,11 +87,111 @@ The directory `E:\Single_frame_smile\Analysis\analysis_sequence` has already def
 
 ---
 
-## 3. Core Idea of the New Analysis
+## 3. Formal Definition of the Prototypes
 
-### 3.1 True-Smile Axis
+### 3.1 Basic Notation
 
-Under one prototype definition, let the prototype of the true-smile class be:
+For the `i`-th normalized sequence in class `c`, denote:
+
+```text
+f_i^c(t), t = 0, 1, ..., 19
+```
+
+Each sequence has shape:
+
+```text
+[20, D]
+```
+
+### 3.2 Method A: Median Trajectory
+
+Method A does not choose one real sequence. Instead, it constructs a new representative trajectory by taking the median at every time point and every feature dimension across all normalized sequences in that class.
+
+Definition:
+
+```text
+p_c^A(t)_d = median_i(f_i^c(t)_d)
+```
+
+Equivalently:
+
+```text
+p_c^A(t) = median_i(f_i^c(t))
+```
+
+where the median is computed element-wise.
+
+Notes:
+
+- Method A uses all time points `t=0..19`.
+- Method A outputs a new prototype trajectory.
+- This trajectory usually does not correspond to a real file.
+
+### 3.3 Method B: Medoid Trajectory
+
+Method B selects one real sequence inside the class that is globally the most representative.
+
+Let each normalized sequence matrix be:
+
+```text
+F_i^c ∈ R^{20×D}
+```
+
+Define the sequence-level distance between any two sequences as:
+
+```text
+d(F_i^c, F_j^c) = ||F_i^c - F_j^c||_F
+```
+
+where `||·||_F` is the Frobenius norm.
+
+Then the medoid index is:
+
+```text
+i_c^* = argmin_i Σ_j d(F_i^c, F_j^c)
+```
+
+The prototype is:
+
+```text
+p_c^B(t) = f_{i_c^*}^c(t)
+```
+
+Notes:
+
+- Method B uses the full sequence-level cost across time.
+- Method B outputs a real sequence.
+- Method B must preserve the corresponding `sequence_id` and frame mapping.
+
+---
+
+## 4. Three Main Analysis Lines
+
+### 4.1 Main Line 1: Direct Difference Analysis
+
+This line directly compares two prototype vectors at the same time point.
+
+For any two classes `a` and `b`, define the difference at time `t` as:
+
+```text
+diff_{a,b}(t) = || p_a(t) - p_b(t) ||_2
+```
+
+where:
+
+- `p_a(t) - p_b(t)` is the difference vector at the same time point
+- `||·||_2` is the Euclidean norm
+
+Interpretation:
+
+- Smaller `diff_{a,b}(t)` means the two classes are closer at that time point.
+- Larger `diff_{a,b}(t)` means the two classes are more different at that time point.
+- The value at `t=0` can be directly interpreted as the starting-state difference.
+- This curve can answer whether the difference already exists at the beginning, whether it grows later, when it reaches a maximum, and whether it shrinks again.
+
+### 4.2 Main Line 2: How Far Does It Move Along the True-Smile Axis?
+
+Under one prototype setting, let the true-smile prototype be:
 
 ```text
 p_true(t), t = 0, 1, ..., 19
@@ -99,36 +212,7 @@ u = g / ||g||
 Notes:
 
 - `g` is not the full true-smile trajectory. It is a first-order semantic axis approximation.
-- This analysis explicitly accepts this first-to-last-line approximation.
-
-### 3.2 Initial Bias
-
-Because each class uses its own `f0` for baseline alignment, the start points in `f_rel` space must not be interpreted as sharing one common origin.
-
-Therefore, the initial bias must be defined separately as the difference between raw baseline vectors, instead of being mixed into the dynamic projection analysis.
-
-For class `c`, define its baseline prototype as the representative baseline vector of that class:
-
-- Method A: baseline median
-- Method B: the baseline of the medoid sequence
-
-Denote it as:
-
-```text
-b_c ∈ R^D
-```
-
-The initial bias relative to true smile is then:
-
-```text
-offset_c = || b_c - b_true ||_2
-```
-
-This quantity describes the static difference before or at the start of the smile and should not be mixed into Question A / Question B.
-
----
-
-## 4. Dynamic Projection Analysis Definitions
+- This analysis explicitly accepts the first-to-last-line approximation.
 
 For the prototype of any class `c`:
 
@@ -148,19 +232,13 @@ Therefore:
 d_c(0) = 0
 ```
 
-This is intentional. The goal is to analyze only the dynamics after the class-specific starting point.
-
-### 4.1 Question A: How far does it move along the true-smile axis?
-
-Define the projection length of class `c` at time `t` onto the true-smile axis as:
+Define the projection length onto the true-smile axis as:
 
 ```text
 a_c(t) = < d_c(t), u >
 ```
 
-where `<·,·>` denotes the inner product.
-
-To obtain a normalized ratio, define:
+The normalized progress ratio is:
 
 ```text
 ratio_along_c(t) = a_c(t) / ||g||
@@ -168,12 +246,12 @@ ratio_along_c(t) = a_c(t) / ||g||
 
 Interpretation:
 
-- `ratio_along_c(t) = 0`: still at its own starting point
-- `ratio_along_c(t) = 1`: has advanced along the axis by the same amount as the full true-smile start-to-end length
+- `ratio_along_c(t) = 0`: still at its own start point
+- `ratio_along_c(t) = 1`: has progressed along the axis by the same amount as the full true-smile start-to-end length
 - `ratio_along_c(t) > 1`: exceeds the true-smile end position along that axis
 - `ratio_along_c(t) < 0`: moves in the opposite direction
 
-### 4.2 Question B: How far does it deviate from the true-smile axis?
+### 4.3 Main Line 3: How Far Does It Deviate from the True-Smile Axis?
 
 First define the projection vector of `d_c(t)` onto the true-smile axis:
 
@@ -181,7 +259,7 @@ First define the projection vector of `d_c(t)` onto the true-smile axis:
 proj_c(t) = proj_g(d_c(t))
 ```
 
-Then define the residual deviation vector:
+Then define the deviation vector:
 
 ```text
 r_c(t) = d_c(t) - proj_c(t)
@@ -201,26 +279,39 @@ ratio_off_c(t) = dist_off_c(t) / ||g||
 
 Interpretation:
 
-- Smaller `ratio_off_c(t)` means the class is closer to the true-smile axis at that time point.
+- Smaller `ratio_off_c(t)` means the class stays closer to the true-smile axis.
 - Larger `ratio_off_c(t)` means the class may still be moving, but its path deviates more strongly from the true-smile axis.
 
 ---
 
-## 5. Why Initial Bias and Dynamic Deviation Must Be Separate
+## 5. Role of Baseline and Initial Bias
 
-This analysis explicitly splits the interpretation into two layers:
+This requirement no longer treats `initial bias` as a primary analysis step. Instead, it is a supplementary interpretation attached to Main Line 1.
 
-1. Initial bias  
-   Compare each class baseline `f0` against the true-smile baseline.
+Reasons:
 
-2. Dynamic projection  
-   Compare how each class, starting from its own origin, advances along and deviates from the true-smile axis.
+1. The class-specific `f0` vectors are naturally different  
+   because `f0` is the mean of the first five frames of each sequence, not the same image.
 
-This split is required because:
+2. In the dynamic projection analysis, we use:
 
-- Directly comparing absolute points across classes in `f_rel` space would mix incompatible baseline reference frames.
-- With `d_c(t) = p_c(t) - p_c(0)`, the value at `t=0` is always zero, which is desirable for dynamic-shape analysis.
-- Initial differences are meaningful, but they should be reported separately rather than embedded into one dynamic metric.
+   ```text
+   d_c(t) = p_c(t) - p_c(0)
+   ```
+
+   This is intentional, because the goal is to analyze the dynamic path after each class-specific starting point. Therefore `d_c(0)=0` is by design.
+
+3. If the research focus is whether the difference already exists at the beginning and how it evolves over time, then the more natural quantity is simply:
+
+   ```text
+   diff_{a,b}(0)
+   ```
+
+That means:
+
+- The direct difference at `t=0` is the most direct expression of the starting-state difference.
+- If needed, baseline `f0` differences can still be reported as supplementary information.
+- But `initial bias` is no longer a primary Method A / Method B step.
 
 ---
 
@@ -236,9 +327,9 @@ p_c^A(t)
 
 Then compute:
 
+- `diff_{a,b}^A(t)`
 - `g^A`
 - `u^A`
-- `offset_c^A`
 - `ratio_along_c^A(t)`
 - `ratio_off_c^A(t)`
 
@@ -252,9 +343,9 @@ p_c^B(t)
 
 Then compute:
 
+- `diff_{a,b}^B(t)`
 - `g^B`
 - `u^B`
-- `offset_c^B`
 - `ratio_along_c^B(t)`
 - `ratio_off_c^B(t)`
 
@@ -263,6 +354,24 @@ Additional Method B requirements:
 - Save the real `sequence_id` of the prototype
 - Save the corresponding `normalized_frames`
 - Allow the plots to reference or highlight the real prototype frames
+
+### 6.3 Output Organization Requirement
+
+All outputs must be separated by prototype trajectory type. Method A and Method B results must not be mixed into the same output file.
+
+Recommended organization:
+
+- filename suffixes:
+  - `..._methodA.*`
+  - `..._methodB.*`
+- or separate subdirectories:
+  - `methodA/...`
+  - `methodB/...`
+
+If both are used together, that is also acceptable, but it must always be obvious:
+
+- whether a result belongs to Method A or Method B
+- and which prototype trajectory definition it corresponds to
 
 ---
 
@@ -283,27 +392,53 @@ Inputs:
 - `prototype_*.npy`
 - `prototype_*_medoid.npy`
 
-### Step 2. Build Baseline Prototypes
+### Step 2. Build Trajectory Prototypes
 
 Purpose:
 
-- Build a representative baseline vector for each class to analyze initial bias.
+- Derive one representative prototype trajectory from multiple normalized sequences in each class.
 
-Definitions:
+Method A:
 
-- Method A: element-wise median across all sample baselines `f0`
-- Method B: use the `f0` from the medoid sequence
+- Take the median across all samples at every time point and every dimension
+- Produce a new `[20, D]` prototype
+
+Method B:
+
+- Use full-sequence distance to compute the medoid
+- Select one real sample as the `[20, D]` prototype
 
 Outputs:
 
-- Baseline prototype per class
-- Baseline offset relative to true smile
+- `p_c^A(t)`
+- `p_c^B(t)`
+- Method B `sequence_id`
 
-### Step 3. Build the True-Smile Axis
+### Step 3. Compute Direct Difference Curves
 
 Purpose:
 
-- Define the reference direction used for all projection analyses.
+- Directly compare class differences at each time point and track their temporal evolution.
+
+Definition:
+
+```text
+diff_{a,b}(t) = || p_a(t) - p_b(t) ||_2
+```
+
+Outputs:
+
+- `polite vs truesmile`
+- `ambiguous vs truesmile`
+- `polite vs ambiguous`
+
+for all `t=0..19`.
+
+### Step 4. Build the True-Smile Axis
+
+Purpose:
+
+- Define the reference direction for all projection analyses.
 
 Definitions:
 
@@ -317,7 +452,7 @@ Notes:
 - Method A and Method B each build their own `g`
 - If `||g||` is extremely small, the analysis must fail clearly or mark the result as invalid
 
-### Step 4. Compute Along-Axis Progress for Each Class
+### Step 5. Compute Along-Axis Progress
 
 Purpose:
 
@@ -336,7 +471,7 @@ Outputs:
 - Projection length at all 20 time points
 - Normalized progress ratio at all 20 time points
 
-### Step 5. Compute Off-Axis Deviation for Each Class
+### Step 6. Compute Off-Axis Deviation
 
 Purpose:
 
@@ -356,15 +491,16 @@ Outputs:
 - Absolute off-axis distance at all 20 time points
 - Normalized off-axis ratio at all 20 time points
 
-### Step 6. Optional Per-Sequence Supplementary Analysis
+### Step 7. Per-Sequence Supplementary Analysis (Required)
 
 Purpose:
 
-- Compare not only class prototypes, but also within-class distributions.
+- Apply the same analysis not only to prototype trajectories, but also to every normalized sequence.
 
 Method:
 
 - Apply the same formulas to every normalized sample sequence `f_norm_i(t)`:
+  - time-wise direct difference
   - `ratio_along_i(t)`
   - `ratio_off_i(t)`
 
@@ -373,8 +509,9 @@ Uses:
 - Compute class mean and standard deviation
 - Inspect within-class dispersion
 - Check whether the prototype reflects the overall class trend
+- Perform within-class statistics and between-class statistical comparisons
 
-### Step 7. Generate Plots and Summary Tables
+### Step 8. Generate Plots and Summary Tables
 
 Purpose:
 
@@ -390,21 +527,30 @@ Recommended output root:
 E:\Matsuda_data\projection_analysis\
 ```
 
-Recommended subfolders:
+Preferred organization:
 
 ```text
-prototypes\
-csv\
-plots\
-report\
+E:\Matsuda_data\projection_analysis\
+├── methodA\
+│   ├── csv\
+│   ├── plots\
+│   ├── prototypes\
+│   └── report\
+└── methodB\
+    ├── csv\
+    ├── plots\
+    ├── prototypes\
+    └── report\
 ```
+
+This organization is preferred over mixing all results in one directory.
 
 ### 8.1 Prototype Metadata
 
 Recommended files:
 
-- `prototypes\projection_meta_methodA.json`
-- `prototypes\projection_meta_methodB.json`
+- `methodA\prototypes\projection_meta_methodA.json`
+- `methodB\prototypes\projection_meta_methodB.json`
 
 Suggested content:
 
@@ -415,31 +561,36 @@ Suggested content:
 - true-smile axis length `||g||`
 - real `sequence_id` for Method B
 
-### 8.2 Initial Bias Results
+### 8.2 Direct Difference Results
 
 Recommended files:
 
-- `csv\baseline_offsets_methodA.csv`
-- `csv\baseline_offsets_methodB.csv`
+- `methodA\csv\direct_distance_methodA.csv`
+- `methodB\csv\direct_distance_methodB.csv`
 
 Suggested columns:
 
 ```text
 method
-class
-offset_to_truesmile
-baseline_norm
-sequence_id   # used by Method B, optional for Method A
+anchor_class
+target_class
+time_index
+difference_norm
 ```
+
+Notes:
+
+- `anchor_class` is the reference class
+- `target_class` is the other class being compared against it
 
 ### 8.3 Dynamic Projection Results
 
 Recommended files:
 
-- `csv\projection_along_methodA.csv`
-- `csv\projection_along_methodB.csv`
-- `csv\projection_off_methodA.csv`
-- `csv\projection_off_methodB.csv`
+- `methodA\csv\projection_along_methodA.csv`
+- `methodB\csv\projection_along_methodB.csv`
+- `methodA\csv\projection_off_methodA.csv`
+- `methodB\csv\projection_off_methodB.csv`
 
 Suggested columns:
 
@@ -453,14 +604,36 @@ off_axis_distance
 off_axis_ratio
 ```
 
-### 8.4 Per-Sequence Supplementary Results
+### 8.4 Baseline Supplementary Results (Optional)
 
 Recommended files:
 
-- `csv\projection_per_sequence_methodA.csv`
-- `csv\projection_per_sequence_methodB.csv`
+- `methodA\csv\baseline_offset_supplement_methodA.csv`
+- `methodB\csv\baseline_offset_supplement_methodB.csv`
 
 Suggested columns:
+
+```text
+method
+class
+baseline_offset_to_truesmile
+sequence_id   # used by Method B, optional for Method A
+```
+
+Notes:
+
+- This part is supplementary only, not a primary output.
+
+### 8.5 Per-Sequence Results
+
+Recommended files:
+
+- `methodA\csv\projection_per_sequence_methodA.csv`
+- `methodB\csv\projection_per_sequence_methodB.csv`
+- `methodA\csv\per_sequence_direct_distance_methodA.csv`
+- `methodB\csv\per_sequence_direct_distance_methodB.csv`
+
+Suggested columns set 1:
 
 ```text
 method
@@ -471,80 +644,148 @@ projection_ratio
 off_axis_ratio
 ```
 
-### 8.5 Summary Reports
+Suggested columns set 2:
+
+```text
+method
+anchor_class
+target_class
+sequence_id
+time_index
+difference_norm
+```
+
+Notes:
+
+- `anchor_class` is the reference prototype class
+- `target_class` is the class of the sequence
+
+### 8.6 Per-Sequence Statistical Summaries
 
 Recommended files:
 
-- `report\projection_summary_methodA.md`
-- `report\projection_summary_methodB.md`
+- `methodA\csv\projection_statistics_methodA.csv`
+- `methodB\csv\projection_statistics_methodB.csv`
+- `methodA\csv\direct_distance_statistics_methodA.csv`
+- `methodB\csv\direct_distance_statistics_methodB.csv`
+
+Suggested columns:
+
+```text
+method
+metric_type
+class
+anchor_class
+time_index
+mean
+std
+median
+q1
+q3
+```
+
+### 8.7 Summary Reports
+
+Recommended files:
+
+- `methodA\report\projection_summary_methodA.md`
+- `methodB\report\projection_summary_methodB.md`
 
 Suggested content:
 
-- ranking of initial biases
+- key findings from the direct-difference curves
 - overall trend of progress along the true-smile axis
 - overall trend of deviation away from the true-smile axis
+- key findings from within-class and between-class statistics
 - similarities and differences between Method A and Method B
 
 ---
 
 ## 9. Plot Requirements
 
-### Plot 1. Baseline Initial-Bias Bar Chart
+### Plot 1. Anchor-Based Direct-Difference Curves (Required)
 
 Suggested files:
 
-- `plots\baseline_offsets_methodA.png`
-- `plots\baseline_offsets_methodB.png`
-
-Content:
-
-- x-axis: class
-- y-axis: `offset_c`
-
-Purpose:
-
-- Report baseline differences separately from dynamic analysis
-
-### Plot 2. Prototype Along-Axis Progress Curves
-
-Suggested files:
-
-- `plots\projection_along_methodA.png`
-- `plots\projection_along_methodB.png`
+- `methodA\plots\direct_distance_anchor_polite_methodA.png`
+- `methodA\plots\direct_distance_anchor_truesmile_methodA.png`
+- `methodA\plots\direct_distance_anchor_ambiguous_methodA.png`
+- `methodB\plots\direct_distance_anchor_polite_methodB.png`
+- `methodB\plots\direct_distance_anchor_truesmile_methodB.png`
+- `methodB\plots\direct_distance_anchor_ambiguous_methodB.png`
 
 Content:
 
 - x-axis: `time_index = 0..19`
-- y-axis: `ratio_along_c(t)`
-- all three class curves on the same plot
+- y-axis: `difference_norm`
+- each plot fixes one anchor class as the reference
+- each plot contains two curves, corresponding to the other two classes relative to that anchor class
 
 Purpose:
 
-- Compare how fast and how far each class advances along the true-smile axis
+- observe whether class differences already exist at the beginning or open up later
+- identify when the difference is maximal and whether it shrinks afterward
 
-### Plot 3. Prototype Off-Axis Deviation Curves
+Notes:
+
+- there should be 3 plots for the 3 anchor classes
+- Method A and Method B each require a full set
+
+### Plot 2. Projection Along True-Smile Axis Curves (Required)
 
 Suggested files:
 
-- `plots\projection_off_methodA.png`
-- `plots\projection_off_methodB.png`
+- `methodA\plots\projection_along_methodA.png`
+- `methodB\plots\projection_along_methodB.png`
 
 Content:
 
 - x-axis: `time_index = 0..19`
-- y-axis: `ratio_off_c(t)`
-- all three class curves on the same plot
+- y-axis: percentage or ratio
+- three curves corresponding to:
+  - polite prototype trajectory
+  - truesmile prototype trajectory
+  - ambiguous prototype trajectory
 
 Purpose:
 
-- Show when each class starts to deviate clearly from the true-smile axis
+- compare how fast and how far each class advances along the true-smile axis
 
-### Plot 4. Along-vs-Off Phase Plot
+Additional requirement:
+
+- the recommended display range is around `0` to `1`
+- if values exceed `1`, they must still be shown without clipping
+
+### Plot 3. Deviation from True-Smile Axis Curves (Required)
 
 Suggested files:
 
-- `plots\projection_phase_methodA.png`
-- `plots\projection_phase_methodB.png`
+- `methodA\plots\projection_off_methodA.png`
+- `methodB\plots\projection_off_methodB.png`
+
+Content:
+
+- x-axis: `time_index = 0..19`
+- y-axis: percentage or ratio
+- three curves corresponding to:
+  - polite prototype trajectory
+  - truesmile prototype trajectory
+  - ambiguous prototype trajectory
+
+Purpose:
+
+- show when each class starts to deviate clearly from the true-smile axis
+
+Additional requirement:
+
+- the y-axis must remain consistent with `ratio_off_c(t)`
+
+### Plot 4. Along-vs-Off Phase Plot (Recommended)
+
+Suggested files:
+
+- `methodA\plots\projection_phase_methodA.png`
+- `methodB\plots\projection_phase_methodB.png`
 
 Content:
 
@@ -554,16 +795,16 @@ Content:
 
 Purpose:
 
-- Visualize progress and deviation jointly
+- visualize progress and deviation jointly
 
-### Plot 5. Per-Sequence Confidence-Band Plots (Recommended)
+### Plot 5. Per-Sequence Statistical-Band Plots (Strongly Recommended)
 
 Suggested files:
 
-- `plots\projection_along_band_methodA.png`
-- `plots\projection_off_band_methodA.png`
-- `plots\projection_along_band_methodB.png`
-- `plots\projection_off_band_methodB.png`
+- `methodA\plots\projection_along_band_methodA.png`
+- `methodA\plots\projection_off_band_methodA.png`
+- `methodB\plots\projection_along_band_methodB.png`
+- `methodB\plots\projection_off_band_methodB.png`
 
 Content:
 
@@ -573,13 +814,36 @@ Content:
 
 Purpose:
 
-- Compare the prototype against the class distribution
+- compare the prototype against the class distribution
+- observe whether within-class variance changes over time
 
-### Plot 6. Method B Prototype Frame Montage (Important)
+### Plot 6. Per-Sequence Direct-Difference Distribution Plots (Recommended)
 
 Suggested files:
 
-- `plots\prototype_frames_methodB_<class>.png`
+- `methodA\plots\direct_distance_band_anchor_polite_methodA.png`
+- `methodA\plots\direct_distance_band_anchor_truesmile_methodA.png`
+- `methodA\plots\direct_distance_band_anchor_ambiguous_methodA.png`
+- `methodB\plots\direct_distance_band_anchor_polite_methodB.png`
+- `methodB\plots\direct_distance_band_anchor_truesmile_methodB.png`
+- `methodB\plots\direct_distance_band_anchor_ambiguous_methodB.png`
+
+Content:
+
+- x-axis: `time_index = 0..19`
+- y-axis: sample-level `difference_norm`
+- for one anchor class, show the mean curve and variance band of the other two classes relative to the anchor prototype
+
+Purpose:
+
+- examine not only prototype-level differences, but also distribution-level class separation
+- assess whether the class difference is stable or driven by a few samples
+
+### Plot 7. Method B Prototype Frame Montage (Important)
+
+Suggested files:
+
+- `methodB\plots\prototype_frames_methodB_<class>.png`
 
 Content:
 
@@ -590,45 +854,104 @@ Purpose:
 
 - strengthen the interpretability of Method B as a real exemplar
 
+### Plot 8. Baseline Supplementary Plot (Optional)
+
+Suggested files:
+
+- `methodA\plots\baseline_offset_supplement_methodA.png`
+- `methodB\plots\baseline_offset_supplement_methodB.png`
+
+Purpose:
+
+- only as a supplementary description of starting-state difference, not a primary plot
+
 ---
 
-## 10. Interpretation Principles
+## 10. Per-Sequence Statistical Analysis Requirements
 
-1. A large `ratio_along` does not automatically mean "more true-smile-like"  
+In addition to the prototype trajectories, the same analysis must be applied to every normalized sequence.
+
+For each sample-level sequence, the analysis must at least compute:
+
+1. time-wise direct difference relative to an anchor prototype
+2. `ratio_along` relative to the true-smile axis
+3. `ratio_off` relative to the true-smile axis
+
+Based on sample-level results, the analysis must at least provide:
+
+1. per-class, per-time-point mean
+2. per-class, per-time-point standard deviation
+3. per-class, per-time-point median
+4. per-class, per-time-point interquartile range or confidence band
+
+If feasible, it is recommended to further include:
+
+1. peak-time comparison
+2. area-under-curve (AUC) comparison
+3. final-time-point comparison
+4. between-class statistical tests
+
+The goals of the sample-level statistical analysis are:
+
+- to check whether the prototype conclusions reflect the class-level trend
+- to measure within-class dispersion
+- to assess whether the between-class differences are statistically stable
+
+---
+
+## 11. Interpretation Principles
+
+1. `diff_{a,b}(t)` answers: "how different are the two classes at this time point?"
+
+2. `ratio_along` answers: "does this class move along the true-smile direction, and by how much?"
+
+3. `ratio_off` answers: "does this class deviate away from the true-smile axis, and by how much?"
+
+4. A large `ratio_along` does not automatically mean "more true-smile-like"  
    It only means more progress along the true-smile axis.
 
-2. A small `ratio_off` means closer adherence to the true-smile axis  
+5. A small `ratio_off` means closer adherence to the true-smile axis  
    It must still be interpreted together with `ratio_along`.
 
-3. A typical "closer to true smile" pattern is:
+6. A typical "closer to true smile" pattern is:
 
 - larger `ratio_along`
 - smaller `ratio_off`
 
-4. Initial bias and dynamic deviation are different layers:
+7. The direct difference at `t=0` is the most direct expression of the starting-state difference.
 
-- initial bias answers "how similar are the starting states?"
-- dynamic deviation answers "how similar is the trajectory shape?"
-
-5. The true-smile axis is a first-to-last-point approximation, not a guarantee that the full true-smile trajectory is linear.
+8. The true-smile axis is a first-to-last-point approximation, not a guarantee that the full true-smile trajectory is linear.
 
 ---
 
-## 11. Final Requirement Summary
+## 12. Final Requirement Summary
 
 This analysis must:
 
 1. Use outputs from `analysis_sequence` as its input foundation.
-2. Explicitly separate baseline initial bias from dynamic projection deviation.
+2. Explicitly define Method A as the median-trajectory method and Method B as the minimum-cost medoid method.
 3. Use the mean of the first five frames to define `f0`.
 4. Use 20 time points with indices `0..19`.
 5. Define the axis from the first and last point of the true-smile prototype.
-6. Use the following normalized metrics:
+6. Treat the following three lines as formal outputs:
+
+- time-wise direct difference
+- projection progress along the true-smile axis
+- deviation distance away from the true-smile axis
+
+7. Use the following normalized metrics:
 
    ```text
    ratio_along_c(t) = projection_length / ||g||
    ratio_off_c(t)   = off_axis_distance / ||g||
    ```
 
-7. Treat Method A and Method B as two parallel primary analyses.
-8. Preserve the real `sequence_id` for Method B and support linkage to real frames.
+8. Treat Method A and Method B as two parallel primary analyses.
+9. The minimum required core plots are:
+
+- 3 anchor-based direct-difference plots per method
+- 1 projection-along plot per method
+- 1 off-axis-deviation plot per method
+
+10. Preserve the real `sequence_id` for Method B and support linkage to real frames.
+11. In addition to the prototype trajectories, the same type of analysis must be applied to every normalized sequence, followed by sample-level statistical summaries.

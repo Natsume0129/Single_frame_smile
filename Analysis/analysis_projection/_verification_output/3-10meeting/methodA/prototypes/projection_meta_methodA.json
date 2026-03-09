@@ -1,0 +1,23 @@
+{
+  "polite": {
+    "num_sequences": 41,
+    "shape": [
+      20,
+      4096
+    ]
+  },
+  "truesmile": {
+    "num_sequences": 6,
+    "shape": [
+      20,
+      4096
+    ]
+  },
+  "ambiguous": {
+    "num_sequences": 27,
+    "shape": [
+      20,
+      4096
+    ]
+  }
+}
