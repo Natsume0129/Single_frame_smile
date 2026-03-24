@@ -9,7 +9,7 @@
 - Method A 输出
 - Method B 输出
 
-本分析用于回答三条主线问题：
+本分析用于回答五条主线问题：
 
 1. 直接差异主线  
    各个类别的 prototype 在每个时间点与基准类别 prototype 的差异有多大，差异如何随时间演化。
@@ -19,6 +19,12 @@
 
 3. 主轴偏离主线  
    各个类别在时间演化过程中，偏离真笑主轴多少。
+
+4. 曲线之间最短点对距离主线  
+   给定两条曲线，计算两条曲线上任意采样点之间欧氏距离的最小值。
+
+5. 切向相关的最近点分解主线  
+   对于一条曲线上的每个点，找到另一条曲线上的最近点，并把该位移分解为沿局部切线方向的分量和垂直于局部切线的残差分量。
 
 本分析需要同时支持两种 prototype：
 
@@ -282,6 +288,105 @@ ratio_off_c(t) = dist_off_c(t) / ||g||
 - `ratio_off_c(t)` 越小，说明该类别在该时间点越贴近真笑主轴。
 - `ratio_off_c(t)` 越大，说明该类别虽然可能也在运动，但偏离真笑主轴越明显。
 
+### 4.4 主线四：曲线之间的最短点对距离
+
+这一主线应直接使用**重采样之前**的原始序列采样点。
+
+重要要求：
+
+- 这一分析不应优先使用时间归一化之后的 20 个点
+- 原因是我们要找的是真实采样点中的最小距离
+- 同时这样才能直接回溯到真实图片帧
+
+对于两条曲线：
+
+```text
+C1(t1), t1 = 0, 1, ..., T1-1
+C2(t2), t2 = 0, 1, ..., T2-1
+```
+
+定义：
+
+```text
+d_min(C1, C2) = min_{t1, t2} || C1(t1) - C2(t2) ||_2
+```
+
+对应的最小点对为：
+
+```text
+(t1*, t2*) = argmin_{t1, t2} || C1(t1) - C2(t2) ||_2
+```
+
+解释：
+
+- 该量表示两条曲线在整个演化过程中最近的一次接近
+- 同时也给出发生最近接近时对应的真实帧
+
+### 4.5 主线五：切向相关的最近点分解
+
+这一主线也应直接使用**重采样之前**的原始序列采样点。
+
+重要要求：
+
+- 这一分析不应优先使用时间归一化之后的离散点
+- 原因是重采样会影响局部切向量的估计
+
+对于曲线 `C1` 上的点 `C1(t)`，先用邻近原始采样点估计该点的局部切向量。
+
+建议的离散定义：
+
+```text
+tau(t) = C1(t+1) - C1(t-1)      对于中间点
+tau(0) = C1(1) - C1(0)
+tau(T1-1) = C1(T1-1) - C1(T1-2)
+```
+
+对应的单位切向方向为：
+
+```text
+u_tan(t) = tau(t) / ||tau(t)||
+```
+
+然后，对每个 `C1(t)`，先在 `C2` 上找到最近点：
+
+```text
+t2*(t) = argmin_{t2} || C2(t2) - C1(t) ||_2
+```
+
+定义位移向量：
+
+```text
+d(t) = C2(t2*(t)) - C1(t)
+```
+
+再把这个位移分解为：
+
+- 沿切线方向的分量
+- 垂直于切线的残差分量
+
+定义：
+
+```text
+d_parallel(t) = <d(t), u_tan(t)> u_tan(t)
+d_normal(t) = d(t) - d_parallel(t)
+```
+
+以及对应的标量长度：
+
+```text
+dist_parallel(t) = ||d_parallel(t)||_2
+dist_normal(t) = ||d_normal(t)||_2
+dist_total(t) = ||d(t)||_2
+```
+
+解释：
+
+- `dist_total(t)` 表示另一条曲线对 `C1(t)` 的最近接近有多近
+- `dist_parallel(t)` 表示这种接近中，有多少是沿着 `C1` 当前运动方向的
+- `dist_normal(t)` 表示这种接近中，有多少是偏离 `C1` 当前运动方向的
+
+这个定义避免了高维空间里“唯一法线不存在”的问题，因为它不依赖唯一法线，而是依赖切向量和残差分解。
+
 ---
 
 ## 5. 关于 baseline 与 initial bias 的定位
@@ -355,7 +460,25 @@ Method B 额外要求：
 - 保存该真实序列对应的 `normalized_frames`
 - 在图表中允许引用或高亮该真实 prototype 的图片
 
-### 6.3 输出组织要求
+### 6.3 共享几何分析
+
+主线四和主线五与 Method A / Method B 的 prototype 分析不同。
+
+它们应作为**共享几何分析**处理，因为：
+
+- 它们基于重采样之前的原始采样点
+- 它们强调与真实帧的对应关系
+- 它们不依赖某一种 prototype 构建方法
+
+因此，这部分输出不需要在 `methodA` 和 `methodB` 下重复各做一份。
+
+建议组织方式：
+
+- `shared/csv/...`
+- `shared/plots/...`
+- `shared/report/...`
+
+### 6.4 输出组织要求
 
 所有输出都必须按 prototype trajectory 方法分开组织，不允许把 Method A 和 Method B 的结果混在同一个文件中。
 
@@ -511,7 +634,45 @@ ratio_off_c(t) = dist_off_c(t) / ||g||
 - 检查 prototype 是否代表该类总体趋势
 - 进行类内统计分析和类间统计比较
 
-### Step 8. 生成图表与汇总表
+### Step 8. 计算曲线之间的最短点对距离
+
+目的：
+
+- 计算两条原始曲线之间最近的一对点
+- 保留真实帧对应关系
+
+输入：
+
+- 重采样之前的原始序列特征
+- 帧名或帧索引映射
+
+输出：
+
+- 最小距离值
+- 对应的 `(t1*, t2*)`
+- 对应的 sequence ID 与 frame ID
+- 对应的图片对
+
+### Step 9. 计算切向相关的最近点分解
+
+目的：
+
+- 对于一条原始曲线上的每个点，观察另一条曲线的最近接近主要是沿切向方向，还是偏离切向方向
+
+输入：
+
+- 重采样之前的原始序列特征
+- 帧名或帧索引映射
+
+输出：
+
+- `dist_total(t)`
+- `dist_parallel(t)`
+- `dist_normal(t)`
+- 另一条曲线上的最近点索引
+- 对应真实帧
+
+### Step 10. 生成图表与汇总表
 
 目的：
 
@@ -684,7 +845,54 @@ q1
 q3
 ```
 
-### 8.7 汇总报告
+### 8.7 共享几何分析输出
+
+建议输出：
+
+- `shared\csv\curve_min_distance.csv`
+- `shared\csv\tangent_relative_distance.csv`
+- `shared\plots\curve_min_distance_examples.png`
+- `shared\plots\tangent_relative_total_distance.png`
+- `shared\plots\tangent_relative_parallel_distance.png`
+- `shared\plots\tangent_relative_normal_distance.png`
+- `shared\report\curve_geometry_summary.md`
+
+`curve_min_distance.csv` 字段建议：
+
+```text
+curve1_class
+curve1_sequence_id
+curve1_time_index
+curve1_frame_name
+curve2_class
+curve2_sequence_id
+curve2_time_index
+curve2_frame_name
+min_distance
+```
+
+`tangent_relative_distance.csv` 字段建议：
+
+```text
+curve1_class
+curve1_sequence_id
+curve1_time_index
+curve1_frame_name
+curve2_class
+curve2_sequence_id
+nearest_time_index_on_curve2
+nearest_frame_name_on_curve2
+dist_total
+dist_parallel
+dist_normal
+```
+
+说明：
+
+- 这些输出应直接使用重采样之前的原始采样点
+- 这些输出必须保留真实帧对应关系
+
+### 8.8 汇总报告
 
 建议输出：
 
@@ -865,6 +1073,40 @@ q3
 
 - 仅作为起始差异的补充说明，不作为主线图。
 
+### 图 9. 曲线最短距离示例图（建议）
+
+文件建议：
+
+- `shared\plots\curve_min_distance_examples.png`
+
+内容：
+
+- 选取若干代表性的曲线对
+- 高亮全局最短距离对应的两张真实图片帧
+- 标注 sequence ID 和 frame name
+
+用途：
+
+- 直接展示“最短点对距离”在图像层面的实际意义
+
+### 图 10. 切向相关距离曲线图（建议）
+
+文件建议：
+
+- `shared\plots\tangent_relative_total_distance.png`
+- `shared\plots\tangent_relative_parallel_distance.png`
+- `shared\plots\tangent_relative_normal_distance.png`
+
+内容：
+
+- 横轴：`C1` 的原始时间索引
+- 纵轴：距离大小
+- 可对选定类别对或选定序列对进行展示
+
+用途：
+
+- 区分最近接近主要是沿当前运动方向发生的，还是偏离当前运动方向发生的
+
 ---
 
 ## 10. 样本级统计分析要求
@@ -896,6 +1138,11 @@ q3
 - 判断 prototype 结论是否代表类整体趋势
 - 判断类内分散程度是否很大
 - 判断不同类别差异是否具有统计稳定性
+
+新的共享几何分析还应支持：
+
+- 多个序列对上的汇总统计
+- 代表性样本对的筛选与展示
 
 ---
 
@@ -933,11 +1180,13 @@ q3
 3. 使用前 5 帧平均定义 `f0`。
 4. 使用 20 个时间点，索引统一为 `0..19`。
 5. 使用真笑 prototype 的首尾连线定义主轴。
-6. 把以下三条主线作为正式输出：
+6. 把以下五条主线作为正式输出：
 
 - 逐时间点直接差异
 - 沿真笑主轴的投影推进
 - 偏离真笑主轴的距离
+- 基于原始未重采样序列点的曲线最短点对距离
+- 基于原始未重采样序列点的切向相关最近点分解
 
 7. 使用以下归一化定义：
 
@@ -953,5 +1202,6 @@ q3
 - 1 张 along-axis progress 曲线图（每种方法各一套）
 - 1 张 off-axis deviation 曲线图（每种方法各一套）
 
-10. Method B 输出中必须保留真实 `sequence_id`，并支持与真实图片对应。
-11. 除了 prototype trajectory 之外，必须对每一条 normalized sequence 做同类分析，并输出样本级统计结果。
+10. 新增的共享几何分析必须保留真实帧对应关系，并直接使用重采样之前的原始序列采样点。
+11. Method B 输出中必须保留真实 `sequence_id`，并支持与真实图片对应。
+12. 除了 prototype trajectory 之外，必须对每一条 normalized sequence 做同类分析，并输出样本级统计结果。

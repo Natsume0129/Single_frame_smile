@@ -9,7 +9,7 @@ All outputs must be separated by prototype trajectory type, at least into:
 - Method A outputs
 - Method B outputs
 
-The analysis should answer three main lines:
+The analysis should answer five main lines:
 
 1. Direct difference line  
    How large is the difference between a reference class prototype and the other class prototypes at each time point, and how does that difference evolve over time?
@@ -19,6 +19,12 @@ The analysis should answer three main lines:
 
 3. Off-axis deviation line  
    How far does each class deviate away from the true-smile axis over time?
+
+4. Curve-to-curve minimum point distance line  
+   Given two trajectories, what is the minimum Euclidean distance between any sampled point on the first curve and any sampled point on the second curve?
+
+5. Tangent-relative nearest-point decomposition line  
+   For each point on one curve, when the nearest point on another curve is found, how much of that displacement lies along the local tangent direction, and how much lies in the normal residual direction?
 
 This analysis must support both prototype definitions:
 
@@ -282,6 +288,105 @@ Interpretation:
 - Smaller `ratio_off_c(t)` means the class stays closer to the true-smile axis.
 - Larger `ratio_off_c(t)` means the class may still be moving, but its path deviates more strongly from the true-smile axis.
 
+### 4.4 Main Line 4: Curve-to-Curve Minimum Point Distance
+
+This line compares two trajectories using their original, pre-resampling sampled points.
+
+Important requirement:
+
+- This analysis should use the sequence data **before time normalization / resampling**
+- The reason is that we want the true minimum among real sampled points
+- This also allows us to recover the corresponding original frames directly
+
+For two curves:
+
+```text
+C1(t1), t1 = 0, 1, ..., T1-1
+C2(t2), t2 = 0, 1, ..., T2-1
+```
+
+define:
+
+```text
+d_min(C1, C2) = min_{t1, t2} || C1(t1) - C2(t2) ||_2
+```
+
+and the corresponding minimum point pair:
+
+```text
+(t1*, t2*) = argmin_{t1, t2} || C1(t1) - C2(t2) ||_2
+```
+
+Interpretation:
+
+- This tells us the closest approach between two trajectories
+- It also tells us at which two real frames this closest approach happens
+
+### 4.5 Main Line 5: Tangent-Relative Nearest-Point Decomposition
+
+This line should also use the original, pre-resampling sampled points.
+
+Important requirement:
+
+- This analysis should use the sequence data **before time normalization / resampling**
+- The reason is that resampling makes the curve more discrete and may distort the local tangent estimate
+
+For a point `C1(t)` on curve `C1`, define the local tangent vector using neighboring original sampled points.
+
+Recommended discrete definition:
+
+```text
+tau(t) = C1(t+1) - C1(t-1)      for interior points
+tau(0) = C1(1) - C1(0)
+tau(T1-1) = C1(T1-1) - C1(T1-2)
+```
+
+and the unit tangent direction:
+
+```text
+u_tan(t) = tau(t) / ||tau(t)||
+```
+
+Then, for each `C1(t)`, first find the nearest point on `C2`:
+
+```text
+t2*(t) = argmin_{t2} || C2(t2) - C1(t) ||_2
+```
+
+Define the displacement vector:
+
+```text
+d(t) = C2(t2*(t)) - C1(t)
+```
+
+Then decompose this displacement into:
+
+- tangent-aligned component
+- normal residual component
+
+Definitions:
+
+```text
+d_parallel(t) = <d(t), u_tan(t)> u_tan(t)
+d_normal(t) = d(t) - d_parallel(t)
+```
+
+and the corresponding scalar magnitudes:
+
+```text
+dist_parallel(t) = ||d_parallel(t)||_2
+dist_normal(t) = ||d_normal(t)||_2
+dist_total(t) = ||d(t)||_2
+```
+
+Interpretation:
+
+- `dist_total(t)` tells us how close `C2` gets to `C1(t)`
+- `dist_parallel(t)` tells us how much of that nearest-point displacement is along the local direction of `C1`
+- `dist_normal(t)` tells us how much of that nearest-point displacement is away from the local direction of `C1`
+
+This avoids the high-dimensional problem of defining one unique normal line. Instead, it uses the tangent direction and the residual decomposition, which remains well-defined in high-dimensional space.
+
 ---
 
 ## 5. Role of Baseline and Initial Bias
@@ -355,7 +460,25 @@ Additional Method B requirements:
 - Save the corresponding `normalized_frames`
 - Allow the plots to reference or highlight the real prototype frames
 
-### 6.3 Output Organization Requirement
+### 6.3 Shared Geometry Analyses
+
+Main Line 4 and Main Line 5 are different from Method A / Method B prototype analyses.
+
+They should be treated as **shared geometry analyses** because:
+
+- they are based on original pre-resampling sampled points
+- they are intended to preserve real-frame correspondence
+- they do not depend on one prototype construction method
+
+So these outputs do not need to be duplicated under both `methodA` and `methodB`.
+
+Recommended organization:
+
+- `shared/csv/...`
+- `shared/plots/...`
+- `shared/report/...`
+
+### 6.4 Output Organization Requirement
 
 All outputs must be separated by prototype trajectory type. Method A and Method B results must not be mixed into the same output file.
 
@@ -511,7 +634,45 @@ Uses:
 - Check whether the prototype reflects the overall class trend
 - Perform within-class statistics and between-class statistical comparisons
 
-### Step 8. Generate Plots and Summary Tables
+### Step 8. Compute Curve-to-Curve Minimum Point Distance
+
+Purpose:
+
+- Measure the closest point-pair distance between two original trajectories.
+- Preserve the real frame correspondence.
+
+Inputs:
+
+- original sequence features before resampling
+- frame-name mapping or frame index mapping
+
+Outputs:
+
+- minimum distance value
+- corresponding `(t1*, t2*)`
+- corresponding sequence IDs and frame IDs
+- corresponding image pair
+
+### Step 9. Compute Tangent-Relative Nearest-Point Decomposition
+
+Purpose:
+
+- For each point on one original curve, measure whether the nearest approach from another curve is mainly along the tangent direction or mainly off that direction.
+
+Inputs:
+
+- original sequence features before resampling
+- frame-name mapping or frame index mapping
+
+Outputs:
+
+- `dist_total(t)`
+- `dist_parallel(t)`
+- `dist_normal(t)`
+- nearest point index on the second curve
+- corresponding frame references
+
+### Step 10. Generate Plots and Summary Tables
 
 Purpose:
 
@@ -684,7 +845,54 @@ q1
 q3
 ```
 
-### 8.7 Summary Reports
+### 8.7 Shared Geometry Outputs
+
+Recommended files:
+
+- `shared\csv\curve_min_distance.csv`
+- `shared\csv\tangent_relative_distance.csv`
+- `shared\plots\curve_min_distance_examples.png`
+- `shared\plots\tangent_relative_total_distance.png`
+- `shared\plots\tangent_relative_parallel_distance.png`
+- `shared\plots\tangent_relative_normal_distance.png`
+- `shared\report\curve_geometry_summary.md`
+
+Suggested columns for `curve_min_distance.csv`:
+
+```text
+curve1_class
+curve1_sequence_id
+curve1_time_index
+curve1_frame_name
+curve2_class
+curve2_sequence_id
+curve2_time_index
+curve2_frame_name
+min_distance
+```
+
+Suggested columns for `tangent_relative_distance.csv`:
+
+```text
+curve1_class
+curve1_sequence_id
+curve1_time_index
+curve1_frame_name
+curve2_class
+curve2_sequence_id
+nearest_time_index_on_curve2
+nearest_frame_name_on_curve2
+dist_total
+dist_parallel
+dist_normal
+```
+
+Notes:
+
+- These outputs should use original pre-resampling sequence points
+- These outputs should preserve real frame correspondence
+
+### 8.8 Summary Reports
 
 Recommended files:
 
@@ -865,6 +1073,39 @@ Purpose:
 
 - only as a supplementary description of starting-state difference, not a primary plot
 
+### Plot 9. Curve-to-Curve Minimum Distance Example Plot (Recommended)
+
+Suggested files:
+
+- `shared\plots\curve_min_distance_examples.png`
+
+Content:
+
+- selected example pairs with the globally nearest two real sampled frames highlighted
+- include sequence IDs and frame names
+
+Purpose:
+
+- show the actual visual meaning of the minimum point-to-point distance
+
+### Plot 10. Tangent-Relative Distance Curves (Recommended)
+
+Suggested files:
+
+- `shared\plots\tangent_relative_total_distance.png`
+- `shared\plots\tangent_relative_parallel_distance.png`
+- `shared\plots\tangent_relative_normal_distance.png`
+
+Content:
+
+- x-axis: original time index of `C1`
+- y-axis: distance magnitude
+- can be shown for selected class pairs or selected sequences
+
+Purpose:
+
+- distinguish whether nearest approach happens mainly along the local motion direction or mainly away from it
+
 ---
 
 ## 10. Per-Sequence Statistical Analysis Requirements
@@ -896,6 +1137,11 @@ The goals of the sample-level statistical analysis are:
 - to check whether the prototype conclusions reflect the class-level trend
 - to measure within-class dispersion
 - to assess whether the between-class differences are statistically stable
+
+The new shared geometry analyses should also support:
+
+- summary statistics over repeated sequence pairs
+- selection of representative example pairs for visualization
 
 ---
 
@@ -933,11 +1179,13 @@ This analysis must:
 3. Use the mean of the first five frames to define `f0`.
 4. Use 20 time points with indices `0..19`.
 5. Define the axis from the first and last point of the true-smile prototype.
-6. Treat the following three lines as formal outputs:
+6. Treat the following five lines as formal outputs:
 
 - time-wise direct difference
 - projection progress along the true-smile axis
 - deviation distance away from the true-smile axis
+- curve-to-curve minimum point distance using original pre-resampling sequence points
+- tangent-relative nearest-point decomposition using original pre-resampling sequence points
 
 7. Use the following normalized metrics:
 
@@ -953,5 +1201,6 @@ This analysis must:
 - 1 projection-along plot per method
 - 1 off-axis-deviation plot per method
 
-10. Preserve the real `sequence_id` for Method B and support linkage to real frames.
-11. In addition to the prototype trajectories, the same type of analysis must be applied to every normalized sequence, followed by sample-level statistical summaries.
+10. The new shared geometry analyses should preserve real frame correspondence and use original pre-resampling sequence points.
+11. Preserve the real `sequence_id` for Method B and support linkage to real frames.
+12. In addition to the prototype trajectories, the same type of analysis must be applied to every normalized sequence, followed by sample-level statistical summaries.
