@@ -1,0 +1,7 @@
+polite_source_dir=E:\Matsuda_data\2-18meeting\polite\13
+truesmile_source_dir=E:\Matsuda_data\2-18meeting\truesmile\3
+ambiguous_source_dir=E:\Matsuda_data\2-18meeting\ambiguous\27
+vggface_model_path=E:\Single_frame_smile\data\models\vggface.pth
+output_dir=E:\Single_frame_smile\Analysis\Heatmap\output
+heatmap_alpha=0.4
+interpolation_method=bilinear

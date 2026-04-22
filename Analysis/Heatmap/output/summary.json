@@ -1,0 +1,1044 @@
+{
+  "model_path": "E:\\Single_frame_smile\\data\\models\\vggface.pth",
+  "output_dir": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output",
+  "target_layer": "conv5_3_by_project_convention_maxp_5_3",
+  "alpha": 0.4,
+  "interpolation_method": "bilinear",
+  "colormap": "turbo",
+  "device": "cuda:0",
+  "sequences": {
+    "polite": {
+      "source_dir": "E:\\Matsuda_data\\2-18meeting\\polite\\13",
+      "num_frames": 45,
+      "files": [
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_0.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_0_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_0_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_0_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_0_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_1.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_1_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_1_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_1_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_1_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_2.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_2_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_2_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_2_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_2_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_3.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_3_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_3_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_3_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_3_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_4.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_4_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_4_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_4_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_4_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_5.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_5_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_5_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_5_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_5_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_6.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_6_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_6_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_6_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_6_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_7.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_7_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_7_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_7_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_7_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_8.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_8_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_8_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_8_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_8_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_9.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_9_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_9_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_9_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_9_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_10.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_10_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_10_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_10_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_10_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_11.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_11_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_11_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_11_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_11_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_12.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_12_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_12_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_12_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_12_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_13.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_13_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_13_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_13_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_13_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_14.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_14_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_14_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_14_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_14_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_16.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_16_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_16_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_16_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_16_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_17.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_17_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_17_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_17_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_17_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_18.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_18_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_18_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_18_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_18_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_19.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_19_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_19_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_19_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_19_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_20.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_20_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_20_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_20_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_20_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_21.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_21_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_21_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_21_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_21_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_22.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_22_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_22_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_22_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_22_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_23.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_23_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_23_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_23_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_23_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_24.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_24_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_24_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_24_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_24_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_25.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_25_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_25_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_25_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_25_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_26.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_26_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_26_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_26_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_26_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_27.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_27_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_27_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_27_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_27_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_28.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_28_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_28_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_28_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_28_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_29.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_29_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_29_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_29_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_29_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_30.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_30_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_30_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_30_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_30_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_31.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_31_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_31_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_31_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_31_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_32.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_32_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_32_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_32_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_32_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_33.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_33_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_33_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_33_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_33_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_34.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_34_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_34_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_34_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_34_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_35.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_35_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_35_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_35_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_35_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_36.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_36_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_36_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_36_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_36_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_37.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_37_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_37_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_37_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_37_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_38.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_38_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_38_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_38_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_38_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_39.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_39_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_39_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_39_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_39_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_40.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_40_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_40_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_40_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_40_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_41.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_41_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_41_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_41_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_41_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_42.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_42_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_42_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_42_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_42_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_43.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_43_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_43_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_43_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_43_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_44.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_44_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_44_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_44_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_44_heatmap.npy"
+        },
+        {
+          "source_file": "20250926_59586-59715_from_59568-59746_0_0_45.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_45_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_45_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_45_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\polite\\20250926_59586-59715_from_59568-59746_0_0_45_heatmap.npy"
+        }
+      ]
+    },
+    "truesmile": {
+      "source_dir": "E:\\Matsuda_data\\2-18meeting\\truesmile\\3",
+      "num_frames": 60,
+      "files": [
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_31.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_31_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_31_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_31_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_31_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_32.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_32_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_32_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_32_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_32_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_33.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_33_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_33_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_33_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_33_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_34.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_34_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_34_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_34_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_34_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_35.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_35_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_35_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_35_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_35_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_36.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_36_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_36_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_36_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_36_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_37.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_37_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_37_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_37_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_37_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_38.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_38_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_38_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_38_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_38_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_39.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_39_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_39_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_39_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_39_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_40.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_40_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_40_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_40_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_40_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_41.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_41_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_41_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_41_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_41_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_42.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_42_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_42_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_42_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_42_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_43.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_43_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_43_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_43_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_43_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_44.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_44_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_44_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_44_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_44_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_45.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_45_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_45_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_45_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_45_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_46.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_46_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_46_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_46_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_46_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_47.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_47_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_47_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_47_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_47_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_48.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_48_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_48_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_48_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_48_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_49.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_49_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_49_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_49_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_49_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_50.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_50_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_50_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_50_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_50_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_51.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_51_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_51_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_51_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_51_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_52.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_52_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_52_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_52_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_52_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_53.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_53_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_53_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_53_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_53_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_54.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_54_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_54_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_54_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_54_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_55.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_55_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_55_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_55_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_55_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_56.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_56_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_56_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_56_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_56_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_57.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_57_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_57_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_57_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_57_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_58.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_58_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_58_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_58_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_58_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_59.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_59_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_59_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_59_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_59_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_60.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_60_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_60_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_60_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_60_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_61.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_61_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_61_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_61_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_61_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_62.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_62_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_62_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_62_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_62_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_63.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_63_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_63_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_63_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_63_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_64.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_64_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_64_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_64_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_64_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_65.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_65_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_65_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_65_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_65_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_66.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_66_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_66_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_66_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_66_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_67.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_67_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_67_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_67_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_67_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_68.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_68_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_68_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_68_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_68_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_69.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_69_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_69_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_69_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_69_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_70.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_70_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_70_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_70_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_70_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_71.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_71_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_71_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_71_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_71_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_72.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_72_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_72_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_72_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_72_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_73.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_73_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_73_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_73_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_73_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_74.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_74_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_74_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_74_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_74_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_75.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_75_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_75_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_75_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_75_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_76.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_76_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_76_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_76_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_76_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_77.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_77_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_77_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_77_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_77_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_78.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_78_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_78_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_78_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_78_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_79.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_79_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_79_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_79_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_79_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_80.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_80_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_80_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_80_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_80_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_81.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_81_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_81_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_81_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_81_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_82.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_82_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_82_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_82_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_82_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_83.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_83_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_83_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_83_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_83_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_84.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_84_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_84_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_84_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_84_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_85.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_85_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_85_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_85_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_85_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_86.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_86_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_86_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_86_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_86_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_87.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_87_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_87_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_87_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_87_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_88.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_88_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_88_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_88_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_88_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_89.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_89_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_89_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_89_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_89_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_42131-42244_from_42133-42409_0_0_90.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_90_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_90_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_90_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\truesmile\\20251019_42131-42244_from_42133-42409_0_0_90_heatmap.npy"
+        }
+      ]
+    },
+    "ambiguous": {
+      "source_dir": "E:\\Matsuda_data\\2-18meeting\\ambiguous\\27",
+      "num_frames": 40,
+      "files": [
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_41.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_41_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_41_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_41_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_41_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_42.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_42_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_42_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_42_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_42_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_43.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_43_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_43_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_43_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_43_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_44.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_44_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_44_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_44_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_44_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_45.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_45_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_45_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_45_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_45_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_46.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_46_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_46_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_46_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_46_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_47.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_47_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_47_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_47_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_47_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_48.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_48_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_48_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_48_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_48_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_49.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_49_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_49_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_49_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_49_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_50.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_50_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_50_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_50_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_50_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_51.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_51_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_51_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_51_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_51_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_52.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_52_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_52_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_52_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_52_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_53.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_53_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_53_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_53_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_53_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_54.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_54_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_54_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_54_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_54_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_55.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_55_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_55_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_55_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_55_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_56.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_56_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_56_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_56_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_56_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_57.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_57_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_57_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_57_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_57_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_58.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_58_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_58_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_58_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_58_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_59.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_59_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_59_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_59_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_59_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_60.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_60_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_60_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_60_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_60_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_61.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_61_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_61_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_61_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_61_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_62.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_62_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_62_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_62_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_62_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_63.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_63_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_63_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_63_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_63_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_64.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_64_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_64_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_64_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_64_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_65.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_65_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_65_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_65_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_65_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_66.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_66_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_66_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_66_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_66_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_67.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_67_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_67_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_67_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_67_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_68.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_68_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_68_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_68_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_68_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_69.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_69_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_69_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_69_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_69_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_70.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_70_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_70_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_70_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_70_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_71.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_71_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_71_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_71_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_71_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_72.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_72_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_72_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_72_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_72_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_73.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_73_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_73_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_73_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_73_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_74.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_74_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_74_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_74_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_74_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_75.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_75_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_75_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_75_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_75_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_76.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_76_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_76_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_76_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_76_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_77.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_77_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_77_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_77_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_77_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_78.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_78_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_78_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_78_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_78_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_79.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_79_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_79_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_79_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_79_heatmap.npy"
+        },
+        {
+          "source_file": "20251019_52090-52185_from_52119-52270_0_0_80.png",
+          "original": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_80_original.png",
+          "heatmap": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_80_heatmap.png",
+          "overlay": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_80_overlay.png",
+          "heatmap_npy": "E:\\Single_frame_smile\\Analysis\\Heatmap\\output\\ambiguous\\20251019_52090-52185_from_52119-52270_0_0_80_heatmap.npy"
+        }
+      ]
+    }
+  }
+}
