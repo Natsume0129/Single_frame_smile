@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>s-d plot 计算方法说明</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --panel: #ffffff;
+      --text: #1f2933;
+      --muted: #52606d;
+      --line: #d9e2ec;
+      --accent: #2563eb;
+      --code-bg: #eef2f7;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 24px 56px;
+    }
+
+    header {
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 34px 0 12px;
+      font-size: 21px;
+      border-left: 4px solid var(--accent);
+      padding-left: 10px;
+    }
+
+    h3 {
+      margin: 24px 0 8px;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    ul,
+    ol {
+      margin: 10px 0 10px 24px;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 18px 0;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, "SFMono-Regular", "Liberation Mono", monospace;
+    }
+
+    code {
+      background: var(--code-bg);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 8px;
+      overflow-x: auto;
+      padding: 14px 16px;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 18px;
+      background: var(--panel);
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4ff;
+    }
+
+    .note {
+      border-left: 4px solid #f59e0b;
+      background: #fff8eb;
+      padding: 12px 14px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>s-d plot 计算方法说明</h1>
+      <p class="meta">项目：Single_frame_smile | 更新时间：2026-06-02 | 说明对象：smile trajectory 的 projection length、off-axis distance 与 nearest-baseline curve 坐标</p>
+    </header>
+
+    <section>
+      <h2>1. 目的</h2>
+      <p>
+        <code>s-d plot</code> 用来把一条高维笑容轨迹压缩成二维关系图：
+        横轴 <code>s</code> 表示沿某一条基准笑容轴的推进量，纵轴 <code>d</code> 表示偏离这条基准轴的距离。
+      </p>
+      <p>
+        当前主要使用两条基准轴：
+      </p>
+      <ul>
+        <li><code>truesmile</code> axis：用真笑代表轨迹的首尾连线定义。</li>
+        <li><code>polite</code> axis：用礼貌笑代表轨迹的首尾连线定义。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. 输入数据</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>版本</th>
+            <th>输入轨迹</th>
+            <th>含义</th>
+            <th>代码位置</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Linear-aligned</td>
+            <td><code>E:\Matsuda_data\2-27meeting\metrics\normalized\&lt;class&gt;\&lt;seq&gt;\normalized_sequence.npy</code></td>
+            <td>先 baseline alignment，再线性重采样到 20 个时间点。</td>
+            <td><code>Analysis\analysis_projection\run_linear_axis_extension.py</code></td>
+          </tr>
+          <tr>
+            <td>DTW-resampled</td>
+            <td><code>E:\Matsuda_data\DTW_resample_output\metrics\resampled20_aligned\&lt;class&gt;\&lt;seq&gt;\aligned_resampled20.npy</code></td>
+            <td>先在类内用 DTW 对齐到代表序列，再重采样到 20 个时间点。</td>
+            <td><code>Analysis\DTW_resample\run_dtw_axis_extension.py</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        每条输入轨迹的形状为 <code>[20, 4096]</code>，其中 20 是归一化后的时间点数，4096 是 VGG-Face <code>fc7</code> 特征维度。
+      </p>
+    </section>
+
+    <section>
+      <h2>3. 基准轴定义</h2>
+      <p>
+        对某个基准类别 <code>a</code>，先取它的代表轨迹：
+      </p>
+      <pre><code>P_a(t), t = 0, 1, ..., 19</code></pre>
+      <p>
+        基准轴使用该代表轨迹的首尾连线：
+      </p>
+      <pre><code>g = P_a(19) - P_a(0)
+axis_norm = ||g||
+u = g / ||g||</code></pre>
+      <p>
+        其中 <code>u</code> 是单位方向向量。若 <code>axis_norm</code> 太小，说明首尾几乎没有运动，无法稳定定义投影轴。
+      </p>
+    </section>
+
+    <section>
+      <h2>4. s 和 d 的正式计算</h2>
+      <p>
+        对任意类别或任意单条样本轨迹 <code>X(t)</code>，当前计算不是直接使用全局坐标，而是先转成相对于自身起点的动态位移：
+      </p>
+      <pre><code>delta(t) = X(t) - X(0)</code></pre>
+      <p>
+        然后计算沿基准轴的投影长度：
+      </p>
+      <pre><code>s(t) = &lt;delta(t), u&gt;</code></pre>
+      <p>
+        投影向量为：
+      </p>
+      <pre><code>projection_vector(t) = s(t) * u</code></pre>
+      <p>
+        偏离基准轴的残差向量为：
+      </p>
+      <pre><code>residual(t) = delta(t) - projection_vector(t)</code></pre>
+      <p>
+        off-axis distance 为：
+      </p>
+      <pre><code>d(t) = ||residual(t)||</code></pre>
+      <p>
+        如果需要归一化比例，则使用：
+      </p>
+      <pre><code>s_ratio(t) = s(t) / axis_norm
+d_ratio(t) = d(t) / axis_norm</code></pre>
+      <div class="note">
+        关键点：<code>s-d plot</code> 中的曲线描述的是“每条轨迹从自身起点出发后如何运动”，不是“不同类别在同一个绝对空间原点附近的位置分布”。
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Prototype 与样本级计算</h2>
+      <h3>5.1 Prototype 曲线</h3>
+      <p>
+        对每个类别的代表轨迹计算一条 <code>s-d</code> 曲线。当前有三类：
+        <code>polite</code>、<code>truesmile</code>、<code>ambiguous</code>。
+      </p>
+      <ul>
+        <li><code>methodA</code>：median trajectory，在每个时间点和每个维度上取类别内中位数。</li>
+        <li><code>methodB</code>：medoid trajectory，从真实样本中选出到同类其他样本总距离最小的一条。</li>
+        <li><code>DTW representative</code>：用类内 DTW 总距离最小的真实序列作为代表。</li>
+      </ul>
+
+      <h3>5.2 样本级曲线</h3>
+      <p>
+        除了 prototype，也会对每一条样本序列计算同样的 <code>s(t)</code> 与 <code>d(t)</code>。
+        这一步用于生成 all-sequence s-d plot 和统计表。
+      </p>
+      <p>
+        当前 all-sequence 图显示类别之间混合较明显，因此它更适合用来检查 prototype 结论是否过度概括，而不是单独作为类别分离证据。
+      </p>
+    </section>
+
+    <section>
+      <h2>6. 输出文件</h2>
+      <h3>6.1 Linear-aligned 输出</h3>
+      <pre><code>E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_axis_truesmile_methodA.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_axis_polite_methodA.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_all_sequences_axis_truesmile_methodA.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_all_sequences_axis_polite_methodA.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_nearest6_axis_truesmile_methodA.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_nearest6_axis_polite_methodA.png
+
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_axis_truesmile_methodB.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_axis_polite_methodB.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_all_sequences_axis_truesmile_methodB.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_all_sequences_axis_polite_methodB.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_nearest6_axis_truesmile_methodB.png
+E:\Matsuda_data\3-10meeting\linear_axis_extension\plots\s_d_nearest6_axis_polite_methodB.png</code></pre>
+
+      <h3>6.2 DTW-resampled 输出</h3>
+      <pre><code>E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_axis_truesmile.png
+E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_axis_polite.png
+E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_all_sequences_axis_truesmile.png
+E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_all_sequences_axis_polite.png
+E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_nearest6_axis_truesmile.png
+E:\Matsuda_data\DTW_resample_output\axis_extension\plots\s_d_nearest6_axis_polite.png</code></pre>
+    </section>
+
+    <section>
+      <h2>7. 当前结果的解释原则</h2>
+      <ol>
+        <li><code>s</code> 大表示该轨迹沿基准笑容轴推进得更多。</li>
+        <li><code>d</code> 大表示该轨迹虽然在变化，但变化方向更多偏离基准轴。</li>
+        <li>以 <code>truesmile</code> 为轴时，<code>truesmile</code> 终点的 <code>d</code> 必然为 0，因为轴本身由它的首尾点定义。</li>
+        <li>中间时间点的 <code>truesmile d(t)</code> 可以不为 0，这说明真笑轨迹本身不是一条直线。</li>
+        <li>prototype 层面的方向差异明显，但 all-sequence s-d 图存在较强混合，不能过度解释为完整类别分布已经分离。</li>
+        <li><code>nearest6</code> 图只表示代表序列附近的局部情况，不代表完整类别分布。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>8. 对应代码中的核心函数</h2>
+      <p>
+        共同计算函数位于：
+      </p>
+      <pre><code>E:\Single_frame_smile\Analysis\analysis_projection\common.py</code></pre>
+      <p>
+        核心函数名：
+      </p>
+      <pre><code>compute_axis_metrics(sequence, axis)</code></pre>
+      <p>
+        该函数返回：
+      </p>
+      <pre><code>projection_length
+projection_ratio
+off_axis_distance
+off_axis_ratio</code></pre>
+    </section>
+
+    <section>
+      <h2>9. Nearest-baseline curve 新坐标定义</h2>
+      <p>
+        2026-06-02 更新：老板提出的新方法中，新的二维坐标不是“nearest point 自己在旧 fixed-axis s-d plot 中的
+        <code>(s,d)</code>”。正确理解是：
+      </p>
+      <pre><code>x 轴 = nearest point 在 baseline curve 上的 progress
+y 轴 = C2 当前点到 nearest point 的连线长度</code></pre>
+
+      <h3>9.1 曲线与基准轴</h3>
+      <p>
+        假设有两条高维轨迹：
+      </p>
+      <pre><code>C_baseline(t)
+C_2(t)</code></pre>
+      <p>
+        其中 <code>C_baseline</code> 不改变。主轴仍然按之前 fixed-axis s-d plot 的方式定义：
+      </p>
+      <pre><code>g = C_baseline(100%) - C_baseline(0%)
+u = g / ||g||</code></pre>
+
+      <h3>9.2 对 C2 每个阶段寻找 baseline 上的最近点</h3>
+      <p>
+        对于 <code>C_2</code> 上某个阶段 <code>t</code> 的点：
+      </p>
+      <pre><code>x_t = C_2(t)</code></pre>
+      <p>
+        在整条 <code>C_baseline</code> 上找最近点：
+      </p>
+      <pre><code>tau*(t) = argmin_tau || C_2(t) - C_baseline(tau) ||</code></pre>
+      <p>
+        最近点为：
+      </p>
+      <pre><code>y_t = C_baseline(tau*(t))</code></pre>
+
+      <h3>9.3 nearest vector 与新的 y 轴</h3>
+      <p>
+        将 <code>C_2(t)</code> 和最近点 <code>C_baseline(tau*(t))</code> 连接，得到 nearest vector：
+      </p>
+      <pre><code>n(t) = C_2(t) - C_baseline(tau*(t))</code></pre>
+      <p>
+        新图的 y 轴是这个 nearest vector 的长度：
+      </p>
+      <pre><code>d_new(t) = || n(t) ||
+         = || C_2(t) - C_baseline(tau*(t)) ||</code></pre>
+
+      <h3>9.4 nearest progress 与新的 x 轴</h3>
+      <p>
+        新图的 x 轴是最近点在 <code>C_baseline</code> 上的 progress。若用曲线参数本身表示 progress：
+      </p>
+      <pre><code>s_new(t) = tau*(t)</code></pre>
+      <p>
+        如果图中希望显示为百分比，则使用：
+      </p>
+      <pre><code>s_new_percent(t) = 100 * tau*(t)</code></pre>
+      <p>
+        如果后续实现中希望与旧 fixed-axis 的 normalized along-axis progress 对齐，也可以补充报告：
+      </p>
+      <pre><code>s_axis(t) =
+  &lt; C_baseline(tau*(t)) - C_baseline(0%), u &gt; / ||g||</code></pre>
+      <p>
+        但本方法的核心坐标定义仍然是 <code>nearest baseline progress</code> 和 <code>nearest vector length</code>。
+      </p>
+
+      <h3>9.5 新曲线</h3>
+      <p>
+        对 <code>C_2</code> 的每个阶段 <code>t</code>，新图中的点是：
+      </p>
+      <pre><code>(s_new(t), d_new(t))</code></pre>
+      <p>
+        连接所有阶段的这些点，得到新的 nearest-baseline s-d curve：
+      </p>
+      <pre><code>{ (s_new(t), d_new(t)) | t = 5%, 10%, 15%, ..., 100% }</code></pre>
+
+      <div class="note">
+        重要更正：这里的 <code>d_new(t)</code> 不是最近点在旧 s-d plot 中的 off-axis distance。
+        它是 <code>C_2(t)</code> 到 baseline curve 最近点的高维欧氏距离。
+      </div>
+
+      <h3>9.6 这个图可以看什么</h3>
+      <ul>
+        <li>它显示 <code>C_2</code> 每个阶段最接近 <code>C_baseline</code> 的哪个 progress。</li>
+        <li>如果 <code>s_new</code> 长期停留在 baseline 的早期阶段，说明 <code>C_2</code> 即使发展到后期，也更像 baseline 的早期状态。</li>
+        <li>如果 <code>s_new</code> 随着 <code>C_2</code> 的阶段从 0% 到 100% 单调推进，说明两条曲线存在比较稳定的阶段对应关系。</li>
+        <li>如果 <code>d_new</code> 长期较大，说明即使找到最近点，<code>C_2</code> 仍然离 baseline trajectory 较远。</li>
+        <li>如果 <code>s_new</code> 跳来跳去，说明 <code>C_2</code> 和 baseline 的时序对应关系不稳定。</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

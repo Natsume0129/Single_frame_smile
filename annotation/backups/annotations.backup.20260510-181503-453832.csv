@@ -1,0 +1,32 @@
+episode_id,video_id,clip_path,person_id,start_frame,peak_frame,end_frame,start_time,peak_time,end_time,main_label,confidence,intensity,eye_involvement,mouth_movement,cheek_raise,symmetry,visible_quality,usable_for_training,note,occlusion_type,occlusion_start_frame,occlusion_end_frame,occlusion_severity,occlusion_note,occlusion_segments
+E000033,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,11212,,12140,373.733,,404.667,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000034,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,12140,,12501,404.667,,416.700,discard,5,5,5,3,3,symmetric,good,yes,,mouth_partial,12140,12501,mild,,"[{""start"": 12140, ""end"": 12501, ""type"": ""mouth_partial"", ""severity"": ""mild"", ""note"": """"}]"
+E000035,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,12501,,12931,416.700,,431.033,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000036,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,12931,13078,13480,431.033,435.933,449.333,polite_smile,4,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000037,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,13480,13550,13647,449.333,451.667,454.900,polite_smile,4,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000038,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,13647,,14676,454.900,,489.200,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000039,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,14676,,15351,489.200,,511.700,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000040,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,15351,,15842,511.700,,528.067,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000041,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,15842,15879,16057,528.067,529.300,535.233,polite_smile,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000042,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,16057,,16370,535.233,,545.667,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000043,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,16370,,16402,545.667,,546.733,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000044,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,16402,,16598,546.733,,553.267,discard,5,3,3,3,3,symmetric,good,yes,,lower_face_occluded,16464,16582,mild,multiple occlusion segments,"[{""start"": 16464, ""end"": 16478, ""type"": ""mouth_partial"", ""severity"": ""mild"", ""note"": """"}, {""start"": 16496, ""end"": 16508, ""type"": ""mouth_partial"", ""severity"": ""mild"", ""note"": """"}, {""start"": 16573, ""end"": 16582, ""type"": ""lower_face_occluded"", ""severity"": ""mild"", ""note"": """"}]"
+E000045,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,16598,,17058,553.267,,568.600,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000046,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,17058,,17225,568.600,,574.167,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000047,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,17225,,17463,574.167,,582.100,discard,5,3,3,3,3,symmetric,good,yes,,mouth_severe,17225,17549,moderate,,"[{""start"": 17225, ""end"": 17549, ""type"": ""mouth_severe"", ""severity"": ""moderate"", ""note"": """"}]"
+E000048,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,17463,,17741,582.100,,591.367,discard,5,3,3,3,3,symmetric,good,yes,,mouth_partial,17463,17548,moderate,,"[{""start"": 17463, ""end"": 17548, ""type"": ""mouth_partial"", ""severity"": ""moderate"", ""note"": """"}]"
+E000049,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,17741,,17966,591.367,,598.867,discard,5,3,3,3,3,symmetric,good,yes,,lower_face_occluded,17741,17810,moderate,multiple occlusion segments,"[{""start"": 17741, ""end"": 17759, ""type"": ""lower_face_occluded"", ""severity"": ""moderate"", ""note"": """"}, {""start"": 17799, ""end"": 17810, ""type"": ""lower_face_occluded"", ""severity"": ""mild"", ""note"": """"}]"
+E000050,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,17966,,18773,598.867,,625.767,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000051,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,18773,,19239,625.767,,641.300,discard,5,3,3,3,3,symmetric,good,yes,,lower_face_occluded,19230,19239,mild,,"[{""start"": 19230, ""end"": 19239, ""type"": ""lower_face_occluded"", ""severity"": ""mild"", ""note"": """"}]"
+E000052,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,19239,,19413,641.300,,647.100,discard,5,3,5,3,3,symmetric,good,yes,,mouth_partial,19239,19392,moderate,,"[{""start"": 19239, ""end"": 19392, ""type"": ""mouth_partial"", ""severity"": ""moderate"", ""note"": """"}]"
+E000053,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,19413,,20267,647.100,,675.567,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000054,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,20267,,20528,675.567,,684.267,discard,5,3,3,3,3,symmetric,good,yes,,lower_face_occluded,20267,20528,severe,,"[{""start"": 20267, ""end"": 20528, ""type"": ""lower_face_occluded"", ""severity"": ""severe"", ""note"": """"}]"
+E000055,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,20528,,20582,684.267,,686.067,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000056,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,20582,,20723,686.067,,690.767,discard,5,3,3,3,3,symmetric,good,yes,,mouth_partial,20582,20664,mild,,"[{""start"": 20582, ""end"": 20664, ""type"": ""mouth_partial"", ""severity"": ""mild"", ""note"": """"}]"
+E000057,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,20723,,21659,690.767,,721.967,neutral,5,3,3,3,3,symmetric,good,yes,,none,,,none,,[]
+E000058,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,22932,,22937,764.400,,764.567,neutral,3,3,3,2,3,symmetric,good,no,,none,,,none,,[]
+E000059,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,22937,,23309,764.567,,776.967,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000060,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,23309,,23994,776.967,,799.800,neutral,5,3,3,2,3,symmetric,good,no,,none,,,none,,[]
+E000061,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,23994,,24651,799.800,,821.700,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000062,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,24651,24669,24780,821.700,822.300,826.000,polite_smile,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000063,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,24780,,25067,826.000,,835.567,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]

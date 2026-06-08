@@ -33,6 +33,7 @@ class AxisExtensionConfig:
     dtw_resample_root: Path = Path(r"E:\Matsuda_data\DTW_resample_output")
     output_root: Path = Path(r"E:\Matsuda_data\DTW_resample_output\axis_extension")
     norm_len: int = 20
+    nearest_count: int = 6
 
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> "AxisExtensionConfig":
@@ -40,6 +41,7 @@ class AxisExtensionConfig:
             dtw_resample_root=Path(args.dtw_resample_root),
             output_root=Path(args.output_root),
             norm_len=int(args.norm_len),
+            nearest_count=int(args.nearest_count),
         )
 
 
@@ -86,6 +88,57 @@ class AxisExtensionPipeline:
                 if path.exists():
                     items.append((class_name, seq_dir.name, path))
         return items
+
+    @staticmethod
+    def sequence_sort_key(seq_id: str) -> tuple[int, int | str]:
+        try:
+            return (0, int(seq_id))
+        except ValueError:
+            return (1, seq_id)
+
+    def nearest_sequences_to_representative(self, count: int) -> tuple[dict[str, set[str]], list[dict]]:
+        reps = self.representative_sequences()
+        available: dict[str, set[str]] = defaultdict(set)
+        for class_name, seq_id, _ in self.all_sequences():
+            available[class_name].add(seq_id)
+
+        selected: dict[str, set[str]] = {}
+        selected_rows: list[dict] = []
+
+        for class_name in CLASS_NAMES:
+            rep_id = reps[class_name]
+            matrix_path = self.cfg.dtw_resample_root / "csv" / f"intra_class_dtw_matrix_{class_name}.csv"
+            distance_by_seq: dict[str, float] = {}
+            for row in self.read_csv(matrix_path):
+                seq1 = row["sequence1_id"]
+                seq2 = row["sequence2_id"]
+                distance = float(row["dtw_distance"])
+                if seq1 == rep_id:
+                    distance_by_seq[seq2] = distance
+                if seq2 == rep_id:
+                    distance_by_seq[seq1] = distance
+
+            for seq_id in available[class_name]:
+                distance_by_seq.setdefault(seq_id, float("inf"))
+
+            ranked = sorted(
+                distance_by_seq.items(),
+                key=lambda item: (item[1], self.sequence_sort_key(item[0])),
+            )
+            chosen = [seq_id for seq_id, _ in ranked[: min(count, len(ranked))]]
+            selected[class_name] = set(chosen)
+            for rank, seq_id in enumerate(chosen, start=1):
+                selected_rows.append(
+                    {
+                        "class": class_name,
+                        "rank": rank,
+                        "sequence_id": seq_id,
+                        "representative_sequence_id": rep_id,
+                        "dtw_distance_to_representative": distance_by_seq[seq_id],
+                    }
+                )
+
+        return selected, selected_rows
 
     def compute_for_axis(self, axis_class: str) -> tuple[list[dict], list[dict], list[dict]]:
         reps = self.representative_sequences()
@@ -214,8 +267,102 @@ class AxisExtensionPipeline:
         fig.savefig(self.cfg.output_root / "plots" / f"s_d_axis_{axis_class}.png")
         plt.close(fig)
 
+    def plot_s_d_all_sequences(self, per_sequence_rows: list[dict], prototype_rows: list[dict], axis_class: str) -> None:
+        grouped_seq: dict[tuple[str, str], list[dict]] = defaultdict(list)
+        for row in per_sequence_rows:
+            grouped_seq[(row["class"], row["sequence_id"])].append(row)
+
+        grouped_proto: dict[str, list[dict]] = defaultdict(list)
+        for row in prototype_rows:
+            grouped_proto[row["class"]].append(row)
+
+        fig, ax = plt.subplots(figsize=(7.5, 6.5), dpi=150)
+        labeled_classes: set[str] = set()
+        for class_name in CLASS_NAMES:
+            for (seq_class, seq_id), rows in grouped_seq.items():
+                if seq_class != class_name:
+                    continue
+                items = sorted(rows, key=lambda r: int(r["time_index"]))
+                x = [float(r["projection_length"]) for r in items]
+                y = [float(r["off_axis_distance"]) for r in items]
+                label = f"{class_name} sequences" if class_name not in labeled_classes else None
+                ax.plot(x, y, linewidth=0.8, alpha=0.18, color=COLORS[class_name], label=label)
+                labeled_classes.add(class_name)
+
+        for class_name in CLASS_NAMES:
+            items = sorted(grouped_proto[class_name], key=lambda r: int(r["time_index"]))
+            x = [float(r["projection_length"]) for r in items]
+            y = [float(r["off_axis_distance"]) for r in items]
+            ax.plot(x, y, linewidth=2.6, color=COLORS[class_name], label=f"{class_name} representative")
+            ax.scatter(x[0], y[0], color=COLORS[class_name], s=24)
+            ax.scatter(x[-1], y[-1], color=COLORS[class_name], s=42, marker="x")
+
+        ax.set_title(f"all-sequence s-d plot (base axis = {axis_class})")
+        ax.set_xlabel("Projection Length")
+        ax.set_ylabel("Off-axis Distance")
+        ax.legend(loc="best", fontsize=8)
+        fig.tight_layout()
+        fig.savefig(self.cfg.output_root / "plots" / f"s_d_all_sequences_axis_{axis_class}.png")
+        plt.close(fig)
+
+    def plot_s_d_nearest_sequences(
+        self,
+        per_sequence_rows: list[dict],
+        prototype_rows: list[dict],
+        selected_ids: dict[str, set[str]],
+        axis_class: str,
+    ) -> None:
+        grouped_seq: dict[tuple[str, str], list[dict]] = defaultdict(list)
+        for row in per_sequence_rows:
+            class_name = row["class"]
+            seq_id = row["sequence_id"]
+            if seq_id in selected_ids.get(class_name, set()):
+                grouped_seq[(class_name, seq_id)].append(row)
+
+        grouped_proto: dict[str, list[dict]] = defaultdict(list)
+        for row in prototype_rows:
+            grouped_proto[row["class"]].append(row)
+
+        fig, ax = plt.subplots(figsize=(7.5, 6.5), dpi=150)
+        for class_name in CLASS_NAMES:
+            class_items = [
+                ((seq_class, seq_id), rows)
+                for (seq_class, seq_id), rows in grouped_seq.items()
+                if seq_class == class_name
+            ]
+            class_items.sort(key=lambda item: self.sequence_sort_key(item[0][1]))
+            for idx, ((_, seq_id), rows) in enumerate(class_items):
+                items = sorted(rows, key=lambda r: int(r["time_index"]))
+                x = [float(r["projection_length"]) for r in items]
+                y = [float(r["off_axis_distance"]) for r in items]
+                label = f"{class_name} nearest {self.cfg.nearest_count}" if idx == 0 else None
+                ax.plot(x, y, linewidth=1.1, alpha=0.45, color=COLORS[class_name], label=label)
+
+        for class_name in CLASS_NAMES:
+            items = sorted(grouped_proto[class_name], key=lambda r: int(r["time_index"]))
+            x = [float(r["projection_length"]) for r in items]
+            y = [float(r["off_axis_distance"]) for r in items]
+            ax.plot(x, y, linewidth=2.8, color=COLORS[class_name], label=f"{class_name} representative")
+            ax.scatter(x[0], y[0], color=COLORS[class_name], s=24)
+            ax.scatter(x[-1], y[-1], color=COLORS[class_name], s=42, marker="x")
+
+        ax.set_title(f"nearest-{self.cfg.nearest_count} s-d plot (base axis = {axis_class})")
+        ax.set_xlabel("Projection Length")
+        ax.set_ylabel("Off-axis Distance")
+        ax.legend(loc="best", fontsize=8)
+        fig.tight_layout()
+        fig.savefig(self.cfg.output_root / "plots" / f"s_d_nearest{self.cfg.nearest_count}_axis_{axis_class}.png")
+        plt.close(fig)
+
     def run(self) -> None:
         summary_lines = ["# DTW-resampled axis extension", ""]
+        selected_ids, selected_rows = self.nearest_sequences_to_representative(self.cfg.nearest_count)
+        self.write_csv(
+            self.cfg.output_root / "csv" / f"nearest{self.cfg.nearest_count}_to_representative_sequences.csv",
+            selected_rows,
+            ["class", "rank", "sequence_id", "representative_sequence_id", "dtw_distance_to_representative"],
+        )
+
         for axis_class in ("truesmile", "polite"):
             prototype_rows, per_sequence_rows, stats_rows, axis_norm = self.compute_for_axis(axis_class)
 
@@ -256,6 +403,8 @@ class AxisExtensionPipeline:
             self.plot_t_s(prototype_rows, axis_class)
             self.plot_t_d(prototype_rows, axis_class)
             self.plot_s_d(prototype_rows, axis_class)
+            self.plot_s_d_all_sequences(per_sequence_rows, prototype_rows, axis_class)
+            self.plot_s_d_nearest_sequences(per_sequence_rows, prototype_rows, selected_ids, axis_class)
 
             summary_lines.append(f"## Base axis = {axis_class}")
             summary_lines.append(f"- axis_norm = {axis_norm:.4f}")
@@ -283,6 +432,7 @@ def main() -> None:
     parser.add_argument("--dtw_resample_root", default=r"E:\Matsuda_data\DTW_resample_output")
     parser.add_argument("--output_root", default=r"E:\Matsuda_data\DTW_resample_output\axis_extension")
     parser.add_argument("--norm_len", type=int, default=20)
+    parser.add_argument("--nearest_count", type=int, default=6)
     args = parser.parse_args()
     pipeline = AxisExtensionPipeline(AxisExtensionConfig.from_args(args))
     pipeline.run()

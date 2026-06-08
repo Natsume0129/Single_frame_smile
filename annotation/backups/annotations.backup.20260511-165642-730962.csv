@@ -1,0 +1,3 @@
+episode_id,video_id,clip_path,person_id,start_frame,peak_frame,end_frame,start_time,peak_time,end_time,main_label,confidence,intensity,eye_involvement,mouth_movement,cheek_raise,symmetry,visible_quality,usable_for_training,note,occlusion_type,occlusion_start_frame,occlusion_end_frame,occlusion_severity,occlusion_note,occlusion_segments
+E000001,20250926_part000_start000000s_end000300s,E:\Matsuda_data\split_videos\20250926_part000_start000000s_end000300s.mp4,,0,,439,0.000,,14.633,neutral,5,3,3,3,3,symmetric,poor,yes,,none,,,none,,[]
+E000004,20250926_part000_start000000s_end000300s,E:\Matsuda_data\split_videos\20250926_part000_start000000s_end000300s.mp4,,989,,1648,32.967,,54.933,discard,5,3,3,3,3,symmetric,poor,no,,none,,,none,,[]

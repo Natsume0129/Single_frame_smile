@@ -1,0 +1,6 @@
+episode_id,video_id,clip_path,person_id,start_frame,peak_frame,end_frame,start_time,peak_time,end_time,main_label,confidence,intensity,eye_involvement,mouth_movement,cheek_raise,symmetry,visible_quality,usable_for_training,note,occlusion_type,occlusion_start_frame,occlusion_end_frame,occlusion_severity,occlusion_note,occlusion_segments
+E000059,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,22937,,23309,764.567,,776.967,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000060,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,23309,,23994,776.967,,799.800,neutral,5,3,3,2,3,symmetric,good,no,,none,,,none,,[]
+E000061,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,23994,,24651,799.800,,821.700,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000062,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,24651,24669,24780,821.700,822.300,826.000,polite_smile,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]
+E000063,20250926,E:\Matsuda_data\rawdata\20250926.mp4,,24780,,25067,826.000,,835.567,neutral,5,3,3,2,3,symmetric,good,yes,,none,,,none,,[]

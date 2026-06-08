@@ -70,6 +70,22 @@ python smile_episode_annotation_tool.py
 - 选中右下方 episode 列表中的已有标注后，表单会进入编辑状态；修改区间、标签或属性后点击 `Save Episode` 会覆盖原 `episode_id` 对应的 CSV 行，而不是追加新行。
 - 如果没有加载已有 episode，`Save Episode` 仍按新 episode 追加，并继续自动设置下一条 start frame。
 
+2026-05-09 追加遮挡标注和 CSV schema 兼容：
+
+- `annotations.csv` 在原有字段末尾追加 `occlusion_type`, `occlusion_start_frame`, `occlusion_end_frame`, `occlusion_severity`, `occlusion_note`，旧字段顺序和含义不变。
+- `annotation_store.py` 支持向后兼容读取旧 CSV：缺少遮挡字段时只在内存中补默认值，不会在 read 阶段写回文件。
+- update/delete 以及旧 schema 第一次 append 触发的 schema 写回都会先生成 `annotations.backup.YYYYMMDD-HHMMSS-ffffff.csv`。
+- GUI 新增 `Occlusion` 分组，可选择遮挡类型和严重程度，设置/跳转/清空遮挡开始与结束帧，并保存遮挡备注。
+- episode list 新增 `occ` 列，便于快速查看当前 episode 的遮挡状态。
+
+2026-05-09 追加多段遮挡标注：
+
+- `annotations.csv` 在遮挡摘要字段后追加 `occlusion_segments`，用 JSON 字符串保存一个 episode 内的 0 个、1 个或多个遮挡片段。
+- 原有 `occlusion_type`, `occlusion_start_frame`, `occlusion_end_frame`, `occlusion_severity`, `occlusion_note` 保留为 episode-level 摘要字段，由 `occlusion_segments` 自动生成。
+- 旧的单段遮挡 CSV 行在读取时会自动迁移为一个 JSON segment；无遮挡行迁移为 `[]`，读取阶段仍不会写回真实 CSV。
+- GUI 中的遮挡控件升级为 segment draft，并新增 segment table，可添加、更新、删除单个 segment，也可清空 draft 或清空所有 segments。
+- 保存 episode 时以当前 segment list 为遮挡信息来源，不再只保存当前 draft。
+
 保存逻辑的风险点主要在路径和重复检测。实现中已把 `clip_path` 保存为绝对路径，并在重复检测时使用解析后的规范路径，避免 Windows 短路径/长路径导致同一个视频重复标注。重复 episode 的判定规则是同一 `clip_path` 且 `start_frame/peak_frame/end_frame` 完全相同。
 
 `usable_for_training` 会随 label、confidence、visible_quality 自动按默认规则更新：confidence >= 4、可见质量为 good/medium、且 label 不是 unclear 时默认 yes，否则 no。用户仍可在保存前手动改为 yes/no。
@@ -77,7 +93,7 @@ python smile_episode_annotation_tool.py
 ## 验证结果
 
 - `python -m py_compile annotation_store.py smile_episode_annotation_tool.py test_annotation_store.py`: passed
-- `python test_annotation_store.py`: 12 tests passed
+- `python test_annotation_store.py`: 31 tests passed
 
 当前 Python 环境已安装 OpenCV，但未安装 PySide6；因此本次未在本机启动 GUI 窗口。安装 `requirements.txt` 后即可运行桌面工具。
 

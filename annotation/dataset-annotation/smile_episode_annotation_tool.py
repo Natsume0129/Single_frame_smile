@@ -47,11 +47,16 @@ from annotation_store import (
     AnnotationStore,
     EpisodeDraft,
     MAIN_LABELS,
+    OcclusionSegment,
+    OCCLUSION_SEVERITY_VALUES,
+    OCCLUSION_TYPES,
     SYMMETRY_VALUES,
     USABLE_VALUES,
     VISIBLE_QUALITY_VALUES,
     default_usable_for_training,
     label_requires_peak,
+    parse_occlusion_segments,
+    summarize_occlusion_segments,
 )
 
 
@@ -156,7 +161,7 @@ class VideoLabel(QLabel):
 class SmileEpisodeAnnotationWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("Smile Episode Annotation Tool")
+        self.setWindowTitle("Temporal Segment State Annotation Tool")
         self.resize(1680, 980)
 
         self.store = AnnotationStore(DEFAULT_CSV_PATH)
@@ -166,9 +171,13 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self.total_frames = 0
         self.current_frame = 0
         self.current_marks: dict[str, int | None] = {"start": None, "peak": None, "end": None}
+        self.current_occlusion_marks: dict[str, int | None] = {"start": None, "end": None}
+        self.current_occlusion_segments: list[OcclusionSegment] = []
         self.current_episode_rows: list[dict[str, str]] = []
         self.loaded_episode_id: str | None = None
         self._updating_slider = False
+        self._setting_usable_programmatically = False
+        self.usable_manually_modified = False
         self.playback_rate = 1.0
         self.playback_start_frame = 0
         self.playback_stop_frame: int | None = None
@@ -182,6 +191,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self._install_shortcuts()
         QApplication.instance().installEventFilter(self)
         self._refresh_info()
+        self._refresh_mark_labels()
         self._refresh_episode_table()
 
     def closeEvent(self, event) -> None:  # noqa: ANN001
@@ -208,35 +218,72 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             return False
 
         key = event.key()
-        if key == Qt.Key.Key_Space:
+        modifiers = event.modifiers() & ~Qt.KeyboardModifier.KeypadModifier
+        plain = modifiers == Qt.KeyboardModifier.NoModifier
+        shift_only = modifiers == Qt.KeyboardModifier.ShiftModifier
+
+        confidence_shortcut = self._confidence_shortcut_value(key) if plain else None
+        if confidence_shortcut is not None:
+            self.confidence_spin.setValue(confidence_shortcut)
+        elif plain and key == Qt.Key.Key_Space:
             if event.isAutoRepeat():
                 return True
             self.toggle_play_pause()
-        elif key == Qt.Key.Key_Left:
+        elif plain and key == Qt.Key.Key_Left:
             self.jump_frames(-1)
-        elif key == Qt.Key.Key_Right:
+        elif plain and key == Qt.Key.Key_Right:
             self.jump_frames(1)
-        elif key == Qt.Key.Key_A:
+        elif plain and key == Qt.Key.Key_A:
             self.jump_frames(-5)
-        elif key == Qt.Key.Key_D:
+        elif shift_only and key == Qt.Key.Key_D:
             self.jump_frames(5)
-        elif key == Qt.Key.Key_J:
+        elif plain and key == Qt.Key.Key_J:
             self.jump_seconds(-1)
-        elif key == Qt.Key.Key_L:
+        elif plain and key == Qt.Key.Key_L:
             self.jump_seconds(1)
-        elif key == Qt.Key.Key_S:
+        elif plain and key == Qt.Key.Key_S:
             self.set_mark("start")
-        elif key == Qt.Key.Key_P:
+        elif plain and key == Qt.Key.Key_P:
             self.set_mark("peak")
-        elif key == Qt.Key.Key_E:
+        elif plain and key == Qt.Key.Key_U:
             self.set_mark("end")
-        elif key == Qt.Key.Key_F11:
+        elif plain and key == Qt.Key.Key_C:
+            self.play_current_segment()
+        elif plain and key == Qt.Key.Key_D:
+            self._quick_save_label("discard", confidence=5, force_default_usable=True)
+        elif plain and key == Qt.Key.Key_N:
+            self._quick_save_label("neutral", confidence=5, force_default_usable=True)
+        elif plain and key == Qt.Key.Key_Q:
+            self._quick_save_label("truesmile")
+        elif plain and key == Qt.Key.Key_W:
+            self._quick_save_label("polite_smile")
+        elif plain and key == Qt.Key.Key_E:
+            self._quick_save_label("bitter_smile")
+        elif plain and key == Qt.Key.Key_R:
+            self._quick_save_label("smiling_but_ambiguous")
+        elif plain and key == Qt.Key.Key_Delete and self._selected_episode_row() is not None:
+            if event.isAutoRepeat():
+                return True
+            self.delete_selected_episode()
+        elif plain and key == Qt.Key.Key_F11:
             self._toggle_fullscreen()
-        elif key == Qt.Key.Key_Escape and self.isFullScreen():
+        elif plain and key == Qt.Key.Key_Escape and self.isFullScreen():
             self.showNormal()
         else:
             return False
         return True
+
+    def _confidence_shortcut_value(self, key: int) -> int | None:
+        for shortcut_key, value in (
+            (Qt.Key.Key_1, 1),
+            (Qt.Key.Key_2, 2),
+            (Qt.Key.Key_3, 3),
+            (Qt.Key.Key_4, 4),
+            (Qt.Key.Key_5, 5),
+        ):
+            if key == shortcut_key:
+                return value
+        return None
 
     def _build_ui(self) -> None:
         central = QWidget(self)
@@ -340,41 +387,48 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
 
         right_layout.addWidget(self._build_episode_group())
         right_layout.addWidget(self._build_attributes_group())
+        right_layout.addWidget(self._build_occlusion_group())
 
         action_row = QHBoxLayout()
         self.save_button = self._make_button(
-            "Save Episode",
+            "Save Segment",
             self.save_episode,
             QStyle.StandardPixmap.SP_DialogSaveButton,
         )
         self.clear_button = self._make_button(
-            "Clear Current Episode",
+            "Clear Current Segment",
             self.clear_current_episode,
             QStyle.StandardPixmap.SP_DialogResetButton,
         )
         self.play_episode_button = self._make_button(
-            "Play Selected Episode",
+            "Play Selected Segment",
             self.play_selected_episode,
             QStyle.StandardPixmap.SP_MediaPlay,
         )
+        self.play_current_button = self._make_button(
+            "Play Current Segment",
+            self.play_current_segment,
+            QStyle.StandardPixmap.SP_MediaPlay,
+        )
         self.delete_button = self._make_button(
-            "Delete Selected Episode",
+            "Delete Selected Segment",
             self.delete_selected_episode,
             QStyle.StandardPixmap.SP_TrashIcon,
         )
         action_row.addWidget(self.save_button)
         action_row.addWidget(self.clear_button)
+        action_row.addWidget(self.play_current_button)
         action_row.addWidget(self.play_episode_button)
         action_row.addWidget(self.delete_button)
         action_row.addStretch(1)
         right_layout.addLayout(action_row)
 
-        table_group = QGroupBox("Episode List for Current Video")
+        table_group = QGroupBox("Segment List for Current Video")
         table_layout = QVBoxLayout(table_group)
         self.episode_table = QTableWidget(0, 7)
         self.episode_table.setMinimumHeight(220)
         self.episode_table.setHorizontalHeaderLabels(
-            ["episode_id", "start", "peak", "end", "label", "conf", "usable"]
+            ["segment_id", "start", "peak", "end", "label", "conf", "usable"]
         )
         self.episode_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.episode_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -397,7 +451,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self.statusBar().showMessage("Ready")
 
     def _build_episode_group(self) -> QGroupBox:
-        group = QGroupBox("Episode Frames")
+        group = QGroupBox("Segment Frames")
         grid = QGridLayout(group)
 
         self.start_frame_value = QLabel("-")
@@ -413,8 +467,10 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         grid.addWidget(self.peak_frame_value, 1, 1)
         self.set_peak_button = self._make_button("Set Peak", lambda: self.set_mark("peak"))
         grid.addWidget(self.set_peak_button, 1, 2)
-        grid.addWidget(self._make_button("Go", lambda: self.jump_to_mark("peak")), 1, 3)
-        grid.addWidget(self._make_button("Clear", self.clear_peak_mark), 1, 4)
+        self.go_peak_button = self._make_button("Go", lambda: self.jump_to_mark("peak"))
+        grid.addWidget(self.go_peak_button, 1, 3)
+        self.clear_peak_button = self._make_button("Clear", self.clear_peak_mark)
+        grid.addWidget(self.clear_peak_button, 1, 4)
 
         grid.addWidget(QLabel("End frame"), 2, 0)
         grid.addWidget(self.end_frame_value, 2, 1)
@@ -429,7 +485,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         return group
 
     def _build_attributes_group(self) -> QGroupBox:
-        group = QGroupBox("Episode Label")
+        group = QGroupBox("Segment State")
         grid = QGridLayout(group)
 
         self.label_combo = QComboBox()
@@ -465,12 +521,18 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             grid.addWidget(QLabel(label), row, 0)
             grid.addWidget(widget, row, 1)
 
-        self.label_combo.currentIndexChanged.connect(self._apply_default_usable)
-        self.label_combo.currentIndexChanged.connect(self._refresh_mark_labels)
-        self.confidence_spin.valueChanged.connect(self._apply_default_usable)
-        self.visible_quality_combo.currentIndexChanged.connect(self._apply_default_usable)
+        self.label_combo.currentIndexChanged.connect(self._on_label_changed)
+        self.usable_combo.currentIndexChanged.connect(self._on_usable_changed)
         self._apply_default_usable()
 
+        return group
+
+    def _build_occlusion_group(self) -> QGroupBox:
+        group = QGroupBox("Discard Rule")
+        layout = QVBoxLayout(group)
+        message = QLabel("Occluded / invalid intervals should be labeled as discard.")
+        message.setWordWrap(True)
+        layout.addWidget(message)
         return group
 
     def _install_shortcuts(self) -> None:
@@ -605,6 +667,10 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         if self.capture is None:
             self._warn("Load a video before marking frames.")
             return
+        if name == "peak" and not label_requires_peak(self.label_combo.currentText()):
+            self.clear_peak_mark()
+            self._warn("Peak frame is only used for smile segment labels.")
+            return
         self.current_marks[name] = self.current_frame
         self._refresh_mark_labels()
         self.slider.set_marker(name, self.current_frame)
@@ -627,19 +693,191 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self._seek_for_user(frame_index)
         self.statusBar().showMessage(f"Jumped to {name} frame {frame_index}")
 
+    def set_occlusion_start(self) -> None:
+        self._set_occlusion_mark("start")
+
+    def set_occlusion_end(self) -> None:
+        self._set_occlusion_mark("end")
+
+    def clear_occlusion_start(self) -> None:
+        self._clear_occlusion_mark("start")
+
+    def clear_occlusion_end(self) -> None:
+        self._clear_occlusion_mark("end")
+
+    def jump_to_occlusion_start(self) -> None:
+        self._jump_to_occlusion_mark("start")
+
+    def jump_to_occlusion_end(self) -> None:
+        self._jump_to_occlusion_mark("end")
+
+    def _set_occlusion_mark(self, name: str) -> None:
+        if self.capture is None:
+            self._warn("Load a video before marking occlusion frames.")
+            return
+        self.current_occlusion_marks[name] = self.current_frame
+        self._refresh_occlusion_labels()
+        self.statusBar().showMessage(f"Set occlusion {name} frame to {self.current_frame}")
+
+    def _clear_occlusion_mark(self, name: str) -> None:
+        self.current_occlusion_marks[name] = None
+        self._refresh_occlusion_labels()
+        self.statusBar().showMessage(f"Cleared occlusion {name} frame")
+
+    def _jump_to_occlusion_mark(self, name: str) -> None:
+        if self.capture is None:
+            self._warn("Load a video before jumping to an occlusion frame.")
+            return
+        frame_index = self.current_occlusion_marks.get(name)
+        if frame_index is None:
+            self._warn(f"Occlusion {name} frame is not set.")
+            return
+        self._seek_for_user(frame_index)
+        self.statusBar().showMessage(f"Jumped to occlusion {name} frame {frame_index}")
+
+    def add_occlusion_segment(self) -> None:
+        segment = self._occlusion_segment_from_draft()
+        if segment is None:
+            return
+        self._warn_if_segment_range_is_unusual(segment)
+        self.current_occlusion_segments.append(segment)
+        self._refresh_occlusion_segment_table()
+        self.clear_occlusion_segment_draft()
+        self.statusBar().showMessage("Added occlusion segment")
+
+    def update_selected_occlusion_segment(self) -> None:
+        row_index = self._selected_occlusion_segment_row()
+        if row_index is None:
+            self._warn("Select an occlusion segment before updating it.")
+            return
+        segment = self._occlusion_segment_from_draft()
+        if segment is None:
+            return
+        self._warn_if_segment_range_is_unusual(segment, ignore_index=row_index)
+        self.current_occlusion_segments[row_index] = segment
+        self._refresh_occlusion_segment_table()
+        self.occlusion_segments_table.selectRow(row_index)
+        self.statusBar().showMessage("Updated selected occlusion segment")
+
+    def delete_selected_occlusion_segment(self) -> None:
+        row_index = self._selected_occlusion_segment_row()
+        if row_index is None:
+            self._warn("Select an occlusion segment before deleting it.")
+            return
+        del self.current_occlusion_segments[row_index]
+        self._refresh_occlusion_segment_table()
+        self.clear_occlusion_segment_draft()
+        self.statusBar().showMessage("Deleted selected occlusion segment")
+
+    def clear_occlusion_segment_draft(self) -> None:
+        self._reset_occlusion_draft(clear_note=True)
+        self.statusBar().showMessage("Cleared occlusion segment draft")
+
+    def clear_all_occlusion_segments(self) -> None:
+        if not self.current_occlusion_segments:
+            self._reset_occlusion_draft(clear_note=True)
+            self._refresh_occlusion_segment_table()
+            return
+        answer = QMessageBox.question(
+            self,
+            "Clear Occlusion Segments",
+            "Clear all occlusion segments for this episode?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if answer != QMessageBox.StandardButton.Yes:
+            return
+        self.current_occlusion_segments = []
+        self._reset_occlusion_draft(clear_note=True)
+        self._refresh_occlusion_segment_table()
+        self.statusBar().showMessage("Cleared all occlusion segments")
+
+    def _occlusion_segment_from_draft(self) -> OcclusionSegment | None:
+        if not hasattr(self, "occlusion_type_combo"):
+            self._warn("Occlusion segments are no longer used; label invalid intervals as discard.")
+            return None
+        start = self.current_occlusion_marks.get("start")
+        end = self.current_occlusion_marks.get("end")
+        occlusion_type = self.occlusion_type_combo.currentText()
+        severity = self.occlusion_severity_combo.currentText()
+        if start is None or end is None:
+            self._warn("Set occlusion start and end before adding or updating a segment.")
+            return None
+        if start > end:
+            self._warn("Occlusion segment frame order must satisfy start <= end.")
+            return None
+        if occlusion_type == "none":
+            self._warn("Choose a non-none occlusion type before adding a segment.")
+            return None
+        return OcclusionSegment(
+            start=start,
+            end=end,
+            type=occlusion_type,
+            severity=severity,
+            note=self.occlusion_note_edit.toPlainText().strip(),
+        )
+
+    def _selected_occlusion_segment_row(self) -> int | None:
+        if not hasattr(self, "occlusion_segments_table"):
+            return None
+        row_index = self.occlusion_segments_table.currentRow()
+        if 0 <= row_index < len(self.current_occlusion_segments):
+            return row_index
+        selected_ranges = self.occlusion_segments_table.selectedRanges()
+        if not selected_ranges:
+            return None
+        row_index = selected_ranges[0].topRow()
+        if 0 <= row_index < len(self.current_occlusion_segments):
+            return row_index
+        return None
+
+    def _load_occlusion_segment_into_draft(self, row: int, _column: int) -> None:
+        if row < 0 or row >= len(self.current_occlusion_segments):
+            return
+        segment = self.current_occlusion_segments[row]
+        self.current_occlusion_marks = {"start": segment.start, "end": segment.end}
+        self._set_combo_value(self.occlusion_type_combo, segment.type)
+        self._set_combo_value(self.occlusion_severity_combo, segment.severity)
+        self.occlusion_note_edit.setPlainText(segment.note)
+        self._refresh_occlusion_labels()
+        self.statusBar().showMessage(f"Loaded occlusion segment {row + 1} into draft")
+
+    def _warn_if_segment_range_is_unusual(
+        self,
+        segment: OcclusionSegment,
+        ignore_index: int | None = None,
+    ) -> None:
+        warnings = []
+        episode_start = self.current_marks.get("start")
+        episode_end = self.current_marks.get("end")
+        if episode_start is not None and episode_end is not None:
+            if segment.start < episode_start or segment.end > episode_end:
+                warnings.append("occlusion segment is outside the episode range")
+        for index, existing in enumerate(self.current_occlusion_segments):
+            if ignore_index is not None and index == ignore_index:
+                continue
+            if segment.start <= existing.end and segment.end >= existing.start:
+                warnings.append("occlusion segment overlaps an existing segment")
+                break
+        if warnings:
+            self.statusBar().showMessage("Warning: " + "; ".join(warnings))
+
     def clear_current_episode(self, clear_note: bool = True) -> None:
         self.current_marks = {"start": None, "peak": None, "end": None}
         self.loaded_episode_id = None
+        self._reset_occlusion_fields(clear_note=True)
         self._refresh_mark_labels()
         if hasattr(self, "slider"):
             self.slider.clear_markers()
         if clear_note and hasattr(self, "note_edit"):
             self.note_edit.clear()
-        self.statusBar().showMessage("Cleared current episode selection")
+        self.usable_manually_modified = False
+        self._apply_default_usable()
+        self.statusBar().showMessage("Cleared current segment selection")
 
     def save_episode(self) -> None:
         if self.capture is None or self.video_path is None:
-            self._warn("Load a video before saving an episode.")
+            self._warn("Load a video before saving a segment.")
             return
 
         if self.current_marks["start"] is None or self.current_marks["end"] is None:
@@ -648,7 +886,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
 
         main_label = self.label_combo.currentText()
         if label_requires_peak(main_label) and self.current_marks["peak"] is None:
-            self._warn("Set peak frame before saving a smile episode.")
+            self._warn("Set peak frame before saving a smile segment.")
             return
         peak_frame = (
             int(self.current_marks["peak"])
@@ -680,6 +918,33 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         else:
             self._append_new_episode(draft)
 
+    def _quick_save_label(
+        self,
+        main_label: str,
+        confidence: int | None = None,
+        *,
+        force_default_usable: bool = False,
+    ) -> None:
+        if self.capture is None or self.video_path is None:
+            self._warn("Load a video before saving a segment.")
+            return
+        if self.current_marks["start"] is None or self.current_marks["end"] is None:
+            self._warn("Set start and end frames before using label shortcuts.")
+            return
+
+        self._set_combo_value(self.label_combo, main_label)
+        if force_default_usable:
+            self.usable_manually_modified = False
+            self._apply_default_usable(force=True)
+        if confidence is not None:
+            self.confidence_spin.setValue(confidence)
+        if label_requires_peak(main_label) and self.current_marks["peak"] is None:
+            self.statusBar().showMessage(
+                f"Selected {main_label}; set a peak frame, then press the label shortcut again to save."
+            )
+            return
+        self.save_episode()
+
     def _append_new_episode(self, draft: EpisodeDraft) -> None:
         try:
             row = self.store.append_episode(draft)
@@ -703,35 +968,34 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             return
 
         if row is None:
-            self._warn(f"Episode {episode_id} was not found in annotations.csv.")
+            self._warn(f"Segment {episode_id} was not found in annotations.csv.")
             self.loaded_episode_id = None
             self._refresh_episode_table()
             return
 
         self._refresh_episode_table()
-        self._select_episode_id(episode_id)
-        self._load_episode_into_form(row)
-        start_frame = self.current_marks.get("start")
-        if start_frame is not None:
-            self._seek_for_user(start_frame)
-        self.statusBar().showMessage(f"Updated {episode_id} in {DEFAULT_CSV_PATH.name}")
+        next_start_frame = draft.end_frame
+        self._prepare_next_episode_start(next_start_frame)
+        self.statusBar().showMessage(
+            f"Updated {episode_id} in {DEFAULT_CSV_PATH.name}; next start set to frame {next_start_frame}"
+        )
 
     def delete_selected_episode(self) -> None:
         row_index = self._selected_episode_row()
         if row_index is None:
-            self._warn("Select an episode row before deleting.")
+            self._warn("Select a segment row before deleting.")
             return
 
         episode = self.current_episode_rows[row_index]
         episode_id = episode.get("episode_id", "")
         if not episode_id:
-            self._warn("Selected episode does not have an episode_id.")
+            self._warn("Selected segment does not have an episode_id.")
             return
 
         answer = QMessageBox.question(
             self,
-            "Delete Episode",
-            f"Delete episode {episode_id} from annotations.csv?",
+            "Delete Segment",
+            f"Delete segment {episode_id} from annotations.csv?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             QMessageBox.StandardButton.No,
         )
@@ -740,7 +1004,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
 
         deleted = self.store.delete_episode(episode_id)
         if deleted is None:
-            self._warn(f"Episode {episode_id} was not found in annotations.csv.")
+            self._warn(f"Segment {episode_id} was not found in annotations.csv.")
             self._refresh_episode_table()
             return
 
@@ -751,29 +1015,46 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
 
     def play_selected_episode(self) -> None:
         if self.capture is None:
-            self._warn("Load a video before playing an episode.")
+            self._warn("Load a video before playing a segment.")
             return
 
         row_index = self._selected_episode_row()
         if row_index is None:
-            self._warn("Select an episode row before playing it.")
+            self._warn("Select a segment row before playing it.")
             return
 
         episode = self.current_episode_rows[row_index]
         start_frame = _optional_int(episode.get("start_frame", ""))
         end_frame = _optional_int(episode.get("end_frame", ""))
         if start_frame is None or end_frame is None:
-            self._warn("Selected episode does not have valid start/end frames.")
+            self._warn("Selected segment does not have valid start/end frames.")
             return
         if start_frame >= end_frame:
-            self._warn("Selected episode has an invalid frame range.")
+            self._warn("Selected segment has an invalid frame range.")
             return
 
         self._load_episode_into_form(episode)
         self._play_frame_range(start_frame, end_frame)
         self.statusBar().showMessage(
-            f"Playing {episode.get('episode_id', 'episode')} from frame {start_frame} to {end_frame}"
+            f"Playing {episode.get('episode_id', 'segment')} from frame {start_frame} to {end_frame}"
         )
+
+    def play_current_segment(self) -> None:
+        if self.capture is None:
+            self._warn("Load a video before playing a segment.")
+            return
+
+        start_frame = self.current_marks.get("start")
+        end_frame = self.current_marks.get("end")
+        if start_frame is None or end_frame is None:
+            self._warn("Set start and end frames before playing the current segment.")
+            return
+        if start_frame >= end_frame:
+            self._warn("Current segment has an invalid frame range.")
+            return
+
+        self._play_frame_range(int(start_frame), int(end_frame))
+        self.statusBar().showMessage(f"Playing current segment from frame {start_frame} to {end_frame}")
 
     def _show_frame(self, frame_index: int) -> None:
         if self.capture is None:
@@ -827,7 +1108,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         start_frame = self._clamp_frame(start_frame)
         end_frame = self._clamp_frame(end_frame)
         if start_frame >= end_frame:
-            self._warn("Episode playback requires start_frame < end_frame.")
+            self._warn("Segment playback requires start_frame < end_frame.")
             return
 
         self.playback_stop_frame = end_frame
@@ -887,6 +1168,34 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self.start_frame_value.setText(self._mark_text("start"))
         self.peak_frame_value.setText(self._mark_text("peak"))
         self.end_frame_value.setText(self._mark_text("end"))
+        peak_enabled = label_requires_peak(self.label_combo.currentText())
+        if hasattr(self, "set_peak_button"):
+            self.set_peak_button.setEnabled(peak_enabled)
+        if hasattr(self, "go_peak_button"):
+            self.go_peak_button.setEnabled(peak_enabled)
+        if hasattr(self, "clear_peak_button"):
+            self.clear_peak_button.setEnabled(peak_enabled)
+
+    def _refresh_occlusion_labels(self) -> None:
+        if not hasattr(self, "occlusion_start_value"):
+            return
+        self.occlusion_start_value.setText(self._occlusion_mark_text("start"))
+        self.occlusion_end_value.setText(self._occlusion_mark_text("end"))
+        if hasattr(self, "occlusion_summary_value"):
+            self.occlusion_summary_value.setText(self._occlusion_summary_text())
+
+    def _occlusion_mark_text(self, name: str) -> str:
+        value = self.current_occlusion_marks.get(name)
+        return "-" if value is None else str(value)
+
+    def _occlusion_summary_text(self) -> str:
+        summary = summarize_occlusion_segments(self.current_occlusion_segments)
+        if summary["occlusion_type"] == "none":
+            return "none"
+        return (
+            f"{summary['occlusion_type']} | {summary['occlusion_start_frame']}-"
+            f"{summary['occlusion_end_frame']} | {summary['occlusion_severity']}"
+        )
 
     def _mark_text(self, name: str) -> str:
         value = self.current_marks.get(name)
@@ -896,8 +1205,51 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             and hasattr(self, "label_combo")
             and not label_requires_peak(self.label_combo.currentText())
         ):
-            return "- (optional)"
+            return "- (not used)"
         return "-" if value is None else str(value)
+
+    def _reset_occlusion_fields(self, clear_note: bool = True) -> None:
+        self.current_occlusion_segments = []
+        self._reset_occlusion_draft(clear_note=clear_note)
+        self._refresh_occlusion_segment_table()
+
+    def _reset_occlusion_draft(self, clear_note: bool = True) -> None:
+        self.current_occlusion_marks = {"start": None, "end": None}
+        if hasattr(self, "occlusion_type_combo"):
+            self.occlusion_type_combo.setCurrentText("none")
+        if hasattr(self, "occlusion_severity_combo"):
+            self.occlusion_severity_combo.setCurrentText("none")
+        if clear_note and hasattr(self, "occlusion_note_edit"):
+            self.occlusion_note_edit.clear()
+        self._refresh_occlusion_labels()
+
+    def _on_occlusion_type_changed(self, *_args) -> None:  # noqa: ANN002
+        if not hasattr(self, "occlusion_type_combo"):
+            return
+        if self.occlusion_type_combo.currentText() != "none":
+            return
+        self.current_occlusion_marks = {"start": None, "end": None}
+        if hasattr(self, "occlusion_severity_combo"):
+            self.occlusion_severity_combo.setCurrentText("none")
+        self._refresh_occlusion_labels()
+
+    def _refresh_occlusion_segment_table(self) -> None:
+        if not hasattr(self, "occlusion_segments_table"):
+            return
+        self.occlusion_segments_table.setRowCount(len(self.current_occlusion_segments))
+        for row_index, segment in enumerate(self.current_occlusion_segments):
+            values = [
+                str(segment.start),
+                str(segment.end),
+                segment.type,
+                segment.severity,
+                segment.note,
+            ]
+            for column, value in enumerate(values):
+                item = QTableWidgetItem(value)
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                self.occlusion_segments_table.setItem(row_index, column, item)
+        self._refresh_occlusion_labels()
 
     def _refresh_episode_table(self) -> None:
         if not hasattr(self, "episode_table"):
@@ -919,6 +1271,11 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
                 item = QTableWidgetItem(value)
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
                 self.episode_table.setItem(row_index, column, item)
+
+    def _short_occlusion_type(self, value: str) -> str:
+        if value == "hand_near_face_but_not_occluding":
+            return "hand_near_face"
+        return value
 
     def _selected_episode_row(self) -> int | None:
         row_index = self.episode_table.currentRow()
@@ -949,7 +1306,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             return
         self._seek_for_user(frame_index)
         self.statusBar().showMessage(
-            f"Loaded {episode.get('episode_id', 'episode')} and jumped to start frame {frame_index}"
+            f"Loaded {episode.get('episode_id', 'segment')} and jumped to start frame {frame_index}"
         )
 
     def _load_episode_into_form(self, row: dict[str, str]) -> None:
@@ -964,6 +1321,7 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
             self.slider.set_marker(name, frame_index)
 
         self.person_id_edit.setText(row.get("person_id", ""))
+        self.usable_manually_modified = False
         self._set_combo_value(self.label_combo, row.get("main_label", ""))
         self._set_spinbox_value(self.confidence_spin, row.get("confidence", ""))
         self._set_spinbox_value(self.intensity_spin, row.get("intensity", ""))
@@ -972,14 +1330,25 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
         self._set_spinbox_value(self.cheek_spin, row.get("cheek_raise", ""))
         self._set_combo_value(self.symmetry_combo, row.get("symmetry", ""))
         self._set_combo_value(self.visible_quality_combo, row.get("visible_quality", ""))
-        self._set_combo_value(self.usable_combo, row.get("usable_for_training", ""))
+        self._setting_usable_programmatically = True
+        try:
+            self._set_combo_value(self.usable_combo, row.get("usable_for_training", ""))
+        finally:
+            self._setting_usable_programmatically = False
+        self.usable_manually_modified = False
         self.note_edit.setPlainText(row.get("note", ""))
+        self.current_occlusion_segments = []
+        self._reset_occlusion_draft(clear_note=True)
+        self._refresh_occlusion_segment_table()
         self._refresh_mark_labels()
+        self._refresh_occlusion_labels()
 
     def _set_combo_value(self, combo: QComboBox, value: str) -> None:
         index = combo.findText(value)
         if index >= 0:
             combo.setCurrentIndex(index)
+        elif combo is self.label_combo:
+            combo.setCurrentText("discard")
 
     def _set_spinbox_value(self, spinbox: QSpinBox, value: str) -> None:
         try:
@@ -990,20 +1359,41 @@ class SmileEpisodeAnnotationWindow(QMainWindow):
     def _prepare_next_episode_start(self, frame_index: int) -> None:
         self.loaded_episode_id = None
         self.current_marks = {"start": frame_index, "peak": None, "end": None}
+        self.usable_manually_modified = False
+        self._reset_occlusion_fields(clear_note=True)
         self.slider.clear_markers()
         self.slider.set_marker("start", frame_index)
         self._refresh_mark_labels()
         self.note_edit.clear()
+        self._apply_default_usable()
 
-    def _apply_default_usable(self, *_args) -> None:  # noqa: ANN002
+    def _apply_default_usable(self, *_args, force: bool = False) -> None:  # noqa: ANN002
         if not hasattr(self, "usable_combo"):
+            return
+        if self.usable_manually_modified and not force:
             return
         value = default_usable_for_training(
             self.confidence_spin.value(),
             self.visible_quality_combo.currentText(),
             self.label_combo.currentText(),
         )
-        self.usable_combo.setCurrentText(value)
+        self._setting_usable_programmatically = True
+        try:
+            self.usable_combo.setCurrentText(value)
+        finally:
+            self._setting_usable_programmatically = False
+
+    def _on_usable_changed(self, *_args) -> None:  # noqa: ANN002
+        if not self._setting_usable_programmatically:
+            self.usable_manually_modified = True
+
+    def _on_label_changed(self, *_args) -> None:  # noqa: ANN002
+        if not label_requires_peak(self.label_combo.currentText()):
+            self.current_marks["peak"] = None
+            if hasattr(self, "slider"):
+                self.slider.set_marker("peak", None)
+        self._apply_default_usable()
+        self._refresh_mark_labels()
 
     def _update_play_button(self) -> None:
         if not hasattr(self, "play_button"):
