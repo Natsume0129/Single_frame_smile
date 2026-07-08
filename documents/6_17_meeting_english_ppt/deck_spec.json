@@ -1,0 +1,275 @@
+{
+  "deck_name": "6_17_meeting_english_ppt",
+  "language": "English",
+  "goal": "Present a concise research update on training deep learning models to distinguish polite, bitter, and true smiles, with emphasis on dataset status, limitations, and candidate model designs.",
+  "selected_image_backend": "built-in image tool",
+  "max_concurrent_slides": 6,
+  "deck_context": {
+    "source_summary": "The project aims to use the existing smile dataset to train a model that distinguishes polite smiles, bitter smiles, and true smiles. A longer-term goal is to learn separate representation axes where pure smile types vary more linearly.",
+    "core_claim": "The current dataset can support baseline experimentation, but class imbalance and motion-related noise must be addressed before reliable smile-type representation learning.",
+    "canonical_terms": [
+      "polite smile",
+      "bitter smile",
+      "true smile",
+      "VGG-Face",
+      "LSTM",
+      "TCN",
+      "graph convolution",
+      "DNN"
+    ]
+  },
+  "sample_generation_method": {
+    "backend_used": "built-in image tool",
+    "tool_name": "image_gen",
+    "mode": "generate",
+    "prompt_source": "approved Slide 5 sample prompt from the parent Codex conversation",
+    "size": "16:9 landscape, built-in default",
+    "quality": "built-in default",
+    "approved_sample_path": "origin_image/slide_05.png",
+    "input_context_preparation": "No strict input images were used. The approved sample slide is available as a style-only reference for remaining slides.",
+    "handoff_rule": "Subagents must use this same backend/tool/mode and return a blocker if the built-in image generation tool is unavailable."
+  },
+  "style": {
+    "name": "Research Lab Minimal",
+    "visual_direction": "Clean academic research update with light warm-white background, deep navy text, teal and cyan accents, thin technical linework, subtle facial-analysis grid motifs, and clear data/model diagrams.",
+    "color_palette": "warm white background, deep navy primary text, teal/cyan accent bars and lines, pale blue supporting fills, restrained gray gridlines",
+    "typography": "large readable English headings, modern sans-serif style, strong hierarchy, left-aligned text where possible, compact but spacious body text",
+    "texture_and_finish": "flat polished slide image with subtle technical paper texture and no decorative clutter",
+    "deck_consistency": "Keep the same palette, typography mood, linework, data-visual style, and facial-analysis motif across the deck while varying composition by slide role."
+  },
+  "approved_style_reference": {
+    "path": "origin_image/slide_05.png",
+    "role": "approved sample slide style reference",
+    "fidelity": "match palette, typography mood, density, technical motif, and overall visual identity only; do not copy the exact layout unless requested"
+  },
+  "slides": [
+    {
+      "number": 1,
+      "title": "Research Update",
+      "role": "cover",
+      "intent": "Open the meeting update and frame the research topic.",
+      "key_points": [
+        "Distinguishing polite, bitter, and true smiles",
+        "Dataset preparation and baseline modeling",
+        "June 17 meeting update"
+      ],
+      "local_context": {
+        "required_background": "This is a short research group meeting presentation. It should feel technical and focused, not like a marketing deck."
+      },
+      "layout": {
+        "composition": "Large title block on the left, subtitle and date beneath, abstract facial-analysis mesh or representation-axis motif on the right.",
+        "content_zones": "left title zone, right visual motif zone, small bottom metadata line",
+        "relationship_to_previous_slide": "first slide"
+      },
+      "visual_elements": {
+        "main_visual": "minimal facial landmark mesh connected to three subtle smile-category axes",
+        "supporting_elements": "small labels for polite smile, bitter smile, and true smile; thin teal line accents"
+      },
+      "constraints": [
+        "Use exact title: Research Update",
+        "Include only the key phrases provided; keep the cover sparse.",
+        "No page number, no logo, no watermark."
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Starting Point from Last Week",
+      "role": "context",
+      "intent": "Restate the prior conclusion and connect it to this week's work.",
+      "key_points": [
+        "Train a model using the existing dataset",
+        "Classify polite, bitter, and true smiles",
+        "Search for separate smile axes in the learned representation",
+        "A pure smile type should ideally grow linearly along its own axis"
+      ],
+      "local_context": {
+        "required_background": "The previous week's conclusion was that the task is not only classification; it is also representation learning for interpretable smile axes."
+      },
+      "layout": {
+        "composition": "Left column with concise context bullets; right side with three horizontal axes labeled by smile type, each with a subtle increasing gradient.",
+        "content_zones": "title top-left, bullet column below, representation-axis diagram on right",
+        "relationship_to_previous_slide": "new explanatory layout"
+      },
+      "visual_elements": {
+        "main_visual": "three clean representation axes with increasing markers, labeled Polite Smile, Bitter Smile, True Smile",
+        "supporting_elements": "small DNN node icon connecting raw data to latent axes"
+      },
+      "constraints": [
+        "Render all English text exactly and clearly.",
+        "Keep the diagram simple and readable.",
+        "Do not add unrelated model names beyond DNN."
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Role of the DNN",
+      "role": "concept explanation",
+      "intent": "Explain why deep learning is needed to reduce nonlinear noise in smile changes.",
+      "key_points": [
+        "Raw smile changes include nonlinear noise",
+        "Main noise sources: head motion, occlusion, and interaction-related movement",
+        "The DNN should suppress non-smile variation",
+        "Goal: a more linear and separable smile representation"
+      ],
+      "local_context": {
+        "required_background": "The DNN is framed as a representation-cleaning component, not just a classifier."
+      },
+      "layout": {
+        "composition": "Horizontal pipeline: noisy facial sequence on the left, DNN filter in the center, cleaner representation axes on the right.",
+        "content_zones": "top title, central pipeline, bottom small explanation callouts",
+        "relationship_to_previous_slide": "continues the representation-axis idea with a pipeline view"
+      },
+      "visual_elements": {
+        "main_visual": "technical pipeline with arrows and light facial-grid thumbnails",
+        "supporting_elements": "three small noise tags: head motion, occlusion, interaction movement"
+      },
+      "constraints": [
+        "Use the words DNN, nonlinear noise, and representation correctly.",
+        "No dense paragraph blocks.",
+        "Avoid cartoon emotion faces; keep it research-oriented."
+      ]
+    },
+    {
+      "number": 4,
+      "title": "This Week's Work",
+      "role": "progress update",
+      "intent": "Show concrete work completed this week before discussing evidence and next steps.",
+      "key_points": [
+        "Organized and cleaned the current dataset",
+        "Split the data and performed augmentation",
+        "Reviewed related papers",
+        "Compared possible model structures"
+      ],
+      "local_context": {
+        "required_background": "This slide should sound like a direct meeting progress report from the researcher."
+      },
+      "layout": {
+        "composition": "Four progress blocks arranged as a clean 2x2 board, each with a small technical icon and short phrase.",
+        "content_zones": "title top, progress board center, slim next-step cue at bottom",
+        "relationship_to_previous_slide": "new progress-board layout"
+      },
+      "visual_elements": {
+        "main_visual": "four completed work tiles: dataset organization, cleaning/splitting/augmentation, paper review, model-structure comparison",
+        "supporting_elements": "small check marks or thin progress indicators using teal accents"
+      },
+      "constraints": [
+        "Keep each work block concise.",
+        "Use check marks sparingly and professionally.",
+        "No celebratory or marketing language."
+      ]
+    },
+    {
+      "number": 5,
+      "title": "Current Dataset Status",
+      "role": "data evidence",
+      "intent": "Make the current class distribution explicit and highlight the data imbalance issue.",
+      "key_points": [
+        "Polite smile: 200 samples",
+        "Bitter smile: 100 samples",
+        "True smile: 50 samples",
+        "The true-smile subset is still too small for a reliable baseline"
+      ],
+      "local_context": {
+        "required_background": "This slide has already been generated and approved as the visual style sample."
+      },
+      "layout": {
+        "composition": "Use the already-approved generated slide image.",
+        "relationship_to_previous_slide": "approved sample slide"
+      },
+      "visual_elements": {
+        "main_visual": "approved bar chart comparing 200, 100, and 50 samples"
+      },
+      "constraints": [
+        "Do not regenerate this slide unless explicitly requested."
+      ],
+      "sample_approved": true
+    },
+    {
+      "number": 6,
+      "title": "Dataset Limitations",
+      "role": "risk analysis",
+      "intent": "Explain what currently limits baseline quality and representation learning.",
+      "key_points": [
+        "Class imbalance weakens baseline reliability",
+        "Head pose changes introduce extra variation",
+        "Interaction actions can obscure facial details",
+        "These factors may reduce classification and representation quality"
+      ],
+      "local_context": {
+        "required_background": "The original notes emphasize three limitations: imbalance, head motion away from a frontal pose, and action occlusion that removes facial details."
+      },
+      "layout": {
+        "composition": "Three risk cards across the center, with a small impact arrow leading to a final baseline-quality warning.",
+        "content_zones": "title top, three risk cards middle, impact callout bottom-right",
+        "relationship_to_previous_slide": "mirrors the data concern but uses a risk-card layout instead of a chart"
+      },
+      "visual_elements": {
+        "main_visual": "three cards labeled Imbalance, Pose Variation, Facial-detail Loss",
+        "supporting_elements": "thin connector arrow to a callout: Baseline reliability risk"
+      },
+      "constraints": [
+        "Do not overdramatize the risks.",
+        "Make all card titles readable.",
+        "Avoid realistic patient or subject photos."
+      ]
+    },
+    {
+      "number": 7,
+      "title": "Ideal Dataset Conditions",
+      "role": "requirements",
+      "intent": "Define what a stronger participant-level dataset should look like.",
+      "key_points": [
+        "Balanced samples for each participant",
+        "Target: 100 bitter, 100 polite, and 100 true smiles",
+        "Mostly frontal face orientation",
+        "No action occlusion over main facial organs"
+      ],
+      "local_context": {
+        "required_background": "The idealized condition is participant-level balance: for one person, approximately 100 samples per smile type, with frontal face angle and no occlusion of key facial organs."
+      },
+      "layout": {
+        "composition": "Left side: balanced three-class distribution diagram. Right side: clean checklist of capture conditions.",
+        "content_zones": "title top, balanced distribution visual left, checklist right",
+        "relationship_to_previous_slide": "answers the limitations slide with requirements"
+      },
+      "visual_elements": {
+        "main_visual": "three equal bars or equal circular counters for Bitter, Polite, and True smiles",
+        "supporting_elements": "small frontal-face angle guide and occlusion-free face icon"
+      },
+      "constraints": [
+        "Use the exact target counts: 100 bitter, 100 polite, 100 true smiles.",
+        "Keep the requirements concrete.",
+        "Do not imply data already meets these conditions."
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Candidate Model Designs",
+      "role": "architecture and next steps",
+      "intent": "Close the update by comparing the two model directions and stating the next experimental step.",
+      "key_points": [
+        "Option 1: VGG-Face + LSTM or TCN",
+        "Option 2: graph convolution over facial regions + LSTM or TCN",
+        "Model temporal changes after feature propagation",
+        "Next: train DNN baselines and compare smile-type differences"
+      ],
+      "local_context": {
+        "required_background": "Two candidate structures are under consideration: continuing with VGG-Face as a feature extractor followed by LSTM or TCN, or modeling the face as a graph and using graph convolution before temporal modeling."
+      },
+      "layout": {
+        "composition": "Side-by-side architecture comparison with Option 1 on the left and Option 2 on the right; both converge into a bottom next-step arrow.",
+        "content_zones": "title top, architecture comparison middle, next-step band bottom",
+        "relationship_to_previous_slide": "final plan slide"
+      },
+      "visual_elements": {
+        "main_visual": "two clean model pipelines: VGG-Face -> LSTM/TCN -> classifier; facial graph -> graph convolution -> LSTM/TCN -> classifier",
+        "supporting_elements": "bottom arrow labeled Train DNN baselines -> Compare smile-type differences"
+      },
+      "constraints": [
+        "Spell VGG-Face, LSTM, TCN, graph convolution, and DNN correctly.",
+        "Keep architecture diagrams simple enough for one slide.",
+        "No extra unrequested algorithms."
+      ]
+    }
+  ]
+}

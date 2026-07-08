@@ -1,6 +1,6 @@
 # Analysis Handoff
 
-Last updated: 2026-06-02
+Last updated: 2026-06-09
 
 This is the canonical handoff document for `E:\Single_frame_smile\Analysis`.
 
@@ -25,15 +25,37 @@ Additional verified locally on 2026-06-02:
 - Added a standalone interactive nearest-6 HTML report with hover highlighting and class filters.
 - Existing unrelated dirty/untracked worktree files were present and were not changed.
 
+Additional verified locally on 2026-06-08:
+
+- Added an interactive explanation report for nearest-baseline progress foldback/jump behavior.
+- Added a frame-pair viewer for clicking nearest-baseline points and inspecting target/baseline frame pairs.
+- Added a frame gallery for all nearest-candidate competition cases, where the best and second nonlocal candidates are within 10% relative distance.
+- Added a narrower frame gallery and CSV listing only events that both have candidate competition and nearest-progress foldback.
+- Before this handoff edit, `git status --short` showed two untracked analysis scripts from this latest nearest-baseline follow-up: `run_nearest_competition_frame_report.py` and `run_nearest_competition_backtrack_report.py`.
+
+Additional verified locally on 2026-06-09:
+
+- Added a progress/distance roundtrip summary report for nearest-baseline foldback behavior.
+- Added a selected-curve inspector report for the four nearest-baseline new-curve charts, with per-stage target frame, nearest baseline frame, distance, second candidate, and return/competition labels.
+- Added a diagnostic module asking whether replacing return+competition points by the second nonlocal candidate improves the four new-curve charts.
+- The simple second-candidate replacement method is not recommended as a final correction. It reduced severe `>=10%` foldbacks from 47 to 18, but it barely changed all negative foldbacks from 299 to 288 and often chose a second candidate that was still behind the previous corrected progress.
+- Current conclusion: keep raw nearest-baseline curves as the primary result; use candidate competition to explain instability, not to silently correct the curve.
+
 Important output roots verified locally:
 
 | Output root | Files | Size | Purpose |
 |---|---:|---:|---|
 | `E:\Matsuda_data\2-27meeting` | 2394 | 282.70 MB | Main `analysis_sequence` output |
-| `E:\Matsuda_data\3-10meeting` | 144 | 64.62 MB | Main `analysis_projection` output |
+| `E:\Matsuda_data\3-10meeting` | 1353 | 153.59 MB | Main `analysis_projection` output plus nearest-baseline follow-up reports |
 | `E:\Matsuda_data\3-10meeting\linear_axis_extension` | 28 | 3.15 MB | Non-DTW linear-aligned axis-extension s-d plots |
 | `E:\Matsuda_data\3-10meeting\nearest_baseline_curve` | 33 | 3.56 MB | Nearest-baseline progress-distance static CSV/plots/report |
 | `E:\Matsuda_data\3-10meeting\nearest_baseline_curve_interactive` | 1 | 0.25 MB | Standalone interactive nearest-6 nearest-baseline HTML |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_jump_explanation` | 1 | 0.92 MB | Interactive explanation of nearest-progress foldback/jump behavior |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_frame_pair_interactive` | 402 | 24.68 MB | Clickable nearest-baseline point/frame-pair viewer |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_frames` | 379 | 23.35 MB | All candidate-competition frame gallery |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames` | 266 | 16.14 MB | Candidate-competition plus foldback event frame gallery and CSV |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_progress_distance_summary` | 1 | 0.21 MB | Interactive progress/distance roundtrip summary |
+| `E:\Matsuda_data\3-10meeting\nearest_baseline_new_curve_competition_summary` | 459 | 28.92 MB | Four new-curve charts, selected-curve inspector, and second-candidate diagnostic module |
 | `E:\Matsuda_data\analysis_minimum_output` | 12 | 1.93 MB | Synchronized minimum-distance output |
 | `E:\Matsuda_data\DTW_analysis` | 58 | 4.11 MB | DTW similarity output |
 | `E:\Matsuda_data\DTW_resample_output` | 476 | 98.40 MB | DTW representative alignment and resampling output |
@@ -920,6 +942,8 @@ Code:
 ```text
 E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_baseline_curve_analysis.py
 E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_baseline_interactive_report.py
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_progress_distance_summary_report.py
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_new_curve_competition_summary_report.py
 ```
 
 Explanation document for Pro-model review:
@@ -1041,6 +1065,188 @@ Interactive report status:
 - Each curve has a transparent hit path for easier selection.
 - Hovering a curve highlights it and shows `method / baseline / class / seq / rank`.
 - Three top filter checkboxes control visible target classes: `polite`, `truesmile`, and `ambiguous`.
+
+Jump explanation report:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_jump_explanation\nearest_progress_jump_explanation.html
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_jump_explanation_report.py
+```
+
+Purpose:
+
+- Explain why nearest baseline progress can fold backward even when target smile change appears natural.
+- Show that hard nearest-neighbor assignment can jump when two baseline locations have very similar distances to the same target point.
+- Emphasize that baseline subtraction removes much static identity information but does not produce a pure expression-only coordinate system; residual pose, crop, lighting, expression-identity interaction, and prototype geometry can still create competing nearest locations.
+
+Frame-pair viewer:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_frame_pair_interactive\nearest_frame_pair_viewer.html
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_frame_pair_report.py
+```
+
+Purpose:
+
+- Click a nearest-baseline point and inspect the target normalized frame versus the nearest baseline frame.
+- Contains 1440 clickable nearest-6 data points and copied frame assets.
+- Method B baselines can show real medoid frames.
+- Method A baselines are median prototypes, so no real baseline frame exists; do not fabricate images for Method A.
+
+Candidate-competition frame gallery:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_competition_frames\nearest_candidate_competition_frames.html
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_competition_frame_report.py
+```
+
+Competition definition used:
+
+```text
+(second_nonlocal_distance - best_distance) / best_distance <= 0.10
+```
+
+The second candidate must be more than `10%` baseline progress away from the best candidate. This avoids counting adjacent 1% grid samples from the same local distance valley as a separate competition.
+
+Verified current output:
+
+- Scanned nearest-6 points: 1440
+- Competitive cases: 985
+- Method A cases: 601
+- Method B cases: 384
+- HTML image references: 1753
+- Missing image references: 0
+- Copied PNG assets: 378
+
+Candidate-competition plus foldback report:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_frames.html
+E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_events.csv
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_competition_backtrack_report.py
+```
+
+Event definition:
+
+```text
+foldback: current_best_progress < previous_best_progress
+competition: (second_nonlocal_distance - current_best_distance) / current_best_distance <= 0.10
+```
+
+The `second_nonlocal` rule is the same as above: the second candidate must be more than `10%` baseline progress away from the current best candidate.
+
+Verified current output:
+
+- Competition plus foldback events: 218
+- Method A events: 131
+- Method B events: 87
+- Target-class counts: `polite=48`, `truesmile=89`, `ambiguous=81`
+- HTML image references: 697
+- Missing image references: 0
+- Copied PNG assets: 264
+- No external CDN/script dependency in the HTML.
+
+For one event card, the five images mean:
+
+1. `Previous target frame`: target sequence at the stage immediately before foldback.
+2. `Current target frame`: target sequence at the foldback stage.
+3. `Previous best baseline`: baseline frame nearest to the previous target stage.
+4. `Current best baseline`: baseline frame nearest to the current target stage; if this progress is lower than the previous best progress, this is the foldback.
+5. `Current second candidate`: the nonlocal competing baseline candidate at the current target stage.
+
+Progress/distance roundtrip summary:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_progress_distance_summary\progress_distance_roundtrip_summary.html
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_progress_distance_summary_report.py
+```
+
+Purpose:
+
+- Explain why nearest progress and nearest distance can move back and forth.
+- Show the two core diagnostic plots: nearest baseline progress over target stage, and nearest distance over target stage.
+- Record the interpretation that progress foldback is an instability of global nearest-point assignment in high-dimensional fc7 feature space, not direct evidence that the facial expression physically moved backward.
+
+Selected-curve inspector and second-candidate diagnostic report:
+
+```text
+E:\Matsuda_data\3-10meeting\nearest_baseline_new_curve_competition_summary\new_curve_competition_summary.html
+```
+
+Related code:
+
+```text
+E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_new_curve_competition_summary_report.py
+```
+
+Report contents:
+
+- The original four new-curve charts:
+  - `Nearest-baseline new curve | methodB | baseline=truesmile`
+  - `Nearest-baseline new curve | methodB | baseline=polite`
+  - `Nearest-baseline new curve | methodA | baseline=truesmile`
+  - `Nearest-baseline new curve | methodA | baseline=polite`
+- A dropdown-based selected-curve inspector. For the selected curve, it shows every target stage, target frame, nearest baseline frame, nearest progress, nearest distance, second nonlocal candidate, relative gap, and return/competition labels.
+- Method B has real baseline medoid frames. Method A baselines are median prototypes and have no real frame; the report shows placeholders for Method A baseline images.
+- A final diagnostic module named `What If Return + Competition Uses the Second Candidate?`
+
+Second-candidate diagnostic definition:
+
+```text
+Scan target stages in temporal order.
+raw point = (u_i, d_i)
+if previous_corrected_progress - u_i >= 10%
+   and (d_second - d_i) / d_i <= 0.10:
+       corrected point = (u_second, d_second)
+else:
+       corrected point = raw point
+```
+
+Verified diagnostic result:
+
+- Replaced points: 118
+- Severe `>=10%` foldbacks before replacement: 47
+- Severe `>=10%` foldbacks after replacement: 18
+- All negative foldbacks before replacement: 299
+- All negative foldbacks after replacement: 288
+- Replacement count by method/baseline:
+  - `methodA|truesmile`: 15
+  - `methodA|polite`: 51
+  - `methodB|truesmile`: 8
+  - `methodB|polite`: 44
+- Among the 18 residual severe foldbacks, 17 happened because the second nonlocal candidate was still behind the previous corrected progress; only 1 residual event lacked a `<=10%` competition candidate.
+
+Conclusion about the second-candidate method:
+
+- This simple replacement should be treated as abandoned/not recommended as a final correction.
+- It is useful as a diagnostic because it proves that many foldbacks occur near competing baseline locations.
+- It is not a good correction rule because `second_nonlocal` means distance-second, not continuity-best. The second candidate can be even less temporally continuous than the raw best candidate.
+- If a future continuity-aware diagnostic is needed, use all close candidates, for example all baseline samples with `distance <= best_distance * 1.10`, then choose the candidate whose progress is closest to the previous corrected progress. That would be a new assumption and must be labeled explicitly; it should not silently replace the raw nearest-baseline result.
 
 Portable Pro-review package:
 
@@ -1223,6 +1429,7 @@ Most useful next analyses:
 7. Treat the all-sequence s-d plot as a negative/weak-evidence check; if direction separation is still a research question, test it with explicit distributional statistics rather than visual prototype curves.
 8. For nearest-baseline curves, add summary metrics: endpoint nearest progress, maximum nearest progress, monotonicity score, number of backward jumps, mean nearest distance, normalized distance by baseline endpoint norm, and normalized distance by baseline arc length.
 9. Consider repeating the nearest-baseline analysis on DTW-resampled trajectories after the linear-aligned result is reviewed.
+10. Do not continue the simple "replace foldback with second nonlocal candidate" correction as a final method. If continuity correction is revisited, choose from all near-tied candidates using an explicit continuity prior and present it beside, not instead of, the raw nearest result.
 
 ## 20. Safe Commands
 
@@ -1262,6 +1469,12 @@ Nearest-baseline curve rerun:
 cd E:\Single_frame_smile\Analysis\analysis_projection
 python .\run_nearest_baseline_curve_analysis.py
 python .\run_nearest_baseline_interactive_report.py
+python .\run_nearest_jump_explanation_report.py
+python .\run_nearest_frame_pair_report.py
+python .\run_nearest_competition_frame_report.py
+python .\run_nearest_competition_backtrack_report.py
+python .\run_nearest_progress_distance_summary_report.py
+python .\run_nearest_new_curve_competition_summary_report.py
 ```
 
 DTW pipeline rerun:
@@ -1323,6 +1536,13 @@ For current results:
 - `E:\Matsuda_data\3-10meeting\nearest_baseline_curve\report\nearest_baseline_curve_report.html`
 - `E:\Matsuda_data\3-10meeting\nearest_baseline_curve\csv\endpoint_100_summary.csv`
 - `E:\Matsuda_data\3-10meeting\nearest_baseline_curve_interactive\interactive_nearest6_curves.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_jump_explanation\nearest_progress_jump_explanation.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_frame_pair_interactive\nearest_frame_pair_viewer.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_frames\nearest_candidate_competition_frames.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_frames.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_events.csv`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_progress_distance_summary\progress_distance_roundtrip_summary.html`
+- `E:\Matsuda_data\3-10meeting\nearest_baseline_new_curve_competition_summary\new_curve_competition_summary.html`
 
 For DTW-resampled s-d plot specifically:
 
@@ -1353,9 +1573,21 @@ For nearest-baseline curve analysis specifically:
 
 - Static analysis code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_baseline_curve_analysis.py`
 - Interactive report code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_baseline_interactive_report.py`
+- Jump explanation report code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_jump_explanation_report.py`
+- Frame-pair viewer code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_frame_pair_report.py`
+- Candidate-competition frame report code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_competition_frame_report.py`
+- Candidate-competition plus foldback report code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_competition_backtrack_report.py`
+- Progress/distance roundtrip summary code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_progress_distance_summary_report.py`
+- Selected-curve inspector and second-candidate diagnostic code: `E:\Single_frame_smile\Analysis\analysis_projection\run_nearest_new_curve_competition_summary_report.py`
 - Explanation for Pro review: `E:\Single_frame_smile\Analysis\documents\nearest_baseline_curve_explanation_for_pro.md`
 - Static output root: `E:\Matsuda_data\3-10meeting\nearest_baseline_curve`
 - Interactive HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_curve_interactive\interactive_nearest6_curves.html`
+- Jump explanation HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_jump_explanation\nearest_progress_jump_explanation.html`
+- Frame-pair viewer HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_frame_pair_interactive\nearest_frame_pair_viewer.html`
+- Competition cases HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_frames\nearest_candidate_competition_frames.html`
+- Competition plus foldback HTML/CSV: `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_frames.html`, `E:\Matsuda_data\3-10meeting\nearest_baseline_competition_backtrack_frames\competition_backtrack_events.csv`
+- Progress/distance summary HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_progress_distance_summary\progress_distance_roundtrip_summary.html`
+- Selected-curve inspector and second-candidate diagnostic HTML: `E:\Matsuda_data\3-10meeting\nearest_baseline_new_curve_competition_summary\new_curve_competition_summary.html`
 - Portable package: `E:\Matsuda_data\3-10meeting\nearest_baseline_for_pro_20260602_111141.zip`
 
 ## 22. Verification Performed for This Handoff
@@ -1382,11 +1614,26 @@ Verified:
 - On 2026-06-02, `run_nearest_baseline_interactive_report.py` was run and produced `interactive_nearest6_curves.html`.
 - On 2026-06-02, the interactive HTML was statically checked: 12 chart cards, 252 curve groups, 252 `data-target-class` attributes, 3 default-checked class filters, and hover handlers present.
 - On 2026-06-02, automatic in-app browser verification for the local `file://` interactive HTML was blocked by browser URL policy; static HTML/JS structure checks were used instead.
+- On 2026-06-08, `run_nearest_competition_frame_report.py` passed `python -m py_compile`.
+- On 2026-06-08, `run_nearest_competition_frame_report.py` was run and produced `nearest_candidate_competition_frames.html`.
+- On 2026-06-08, the all-competition report was statically checked: 985 cases, 1753 image references, 0 missing image references, 378 copied PNG assets, default all-method visibility, and no external CDN/script dependency.
+- On 2026-06-08, automatic in-app browser verification for the local `file://` competition HTML was blocked by browser URL policy; static HTML/data/image-reference checks were used instead.
+- On 2026-06-08, `run_nearest_competition_backtrack_report.py` passed `python -m py_compile`.
+- On 2026-06-08, `run_nearest_competition_backtrack_report.py` was run and produced `competition_backtrack_frames.html` and `competition_backtrack_events.csv`.
+- On 2026-06-08, the competition-plus-foldback report was statically checked: 218 events, 697 image references, 0 missing image references, 264 copied PNG assets, and no external CDN/script dependency.
+- On 2026-06-08, `git status --short` was checked after cleanup and before this handoff edit; the only untracked files shown were `Analysis/analysis_projection/run_nearest_competition_frame_report.py` and `Analysis/analysis_projection/run_nearest_competition_backtrack_report.py`.
+- On 2026-06-09, `new_curve_competition_summary.html` existed and contained the original `Four New-Curve Charts`, `Selected Curve Inspector`, and the added `What If Return + Competition Uses the Second Candidate?` section.
+- On 2026-06-09, the selected-curve inspector report was statically checked: 84 raw lines, 84 corrected lines, 0 missing image references, and embedded JavaScript syntax passed `node --check` using the bundled workspace Node runtime.
+- On 2026-06-09, the second-candidate diagnostic was checked from the embedded HTML payload: 118 replaced points, severe `>=10%` foldbacks reduced from 47 to 18, all negative foldbacks reduced only from 299 to 288, and 17 of 18 residual severe foldbacks had a second candidate that was still behind the previous corrected progress.
+- On 2026-06-09, automatic in-app browser verification for the local `file://` selected-curve inspector HTML was blocked by browser URL policy; static HTML/data/image-reference checks were used instead.
+- On 2026-06-09, `git status --short` showed this handoff file modified plus untracked nearest-baseline follow-up scripts and existing `__pycache__` files. No unrelated worktree changes were reverted.
 
 Not verified:
 
 - No full raw-image-to-feature pipeline was rerun.
 - No visual quality review was done for every generated plot.
+- No visual quality review was done for every event card in the competition/foldback frame galleries.
 - No code tests were run.
 - Nearest-baseline analysis has not yet been rerun on DTW-resampled trajectories.
 - No statistical hypothesis test has been added for nearest-baseline progress or distance metrics.
+- The simple second-candidate replacement diagnostic is not adopted as a final analysis method.
