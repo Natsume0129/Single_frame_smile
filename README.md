@@ -5,6 +5,7 @@
 
 | 从哪里开始 | 内容 |
 |---|---|
+| [换机交接：从已有数据继续分析](documents/HANDOFF_temporal_smile_20261110.md) | 迁移步骤、标注与模型沿革、数据字段、读取一段曲线的示例、实验结论和复现命令 |
 | [时序实验原始输入包（ZIP，3.09 MB）](datasets/smile_temporal_inputs_20261110.zip) | 26,680 帧的 18 维排名分数、时间与标签、1,215 段 clip 的冻结划分、177 段测试 clip 的基准预测，以及包内中文使用说明 |
 | [实验结果汇总（英文）](reports/temporal_smile/README.md) | 数据划分、测试集 ACC 和 macro-F1、固定长度与变长张量对比，以及结果适用范围 |
 | [标注与建模方法（中文）](Temporal_analysis_report.md) | 从人工选帧、片段内配对、个人排序模型到 18 条区域曲线的方法，以及原工作区的数据索引 |
