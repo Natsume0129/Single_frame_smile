@@ -5,13 +5,20 @@
 
 | 从哪里开始 | 内容 |
 |---|---|
+| [时序实验原始输入包（ZIP，3.09 MB）](datasets/smile_temporal_inputs_20261110.zip) | 26,680 帧的 18 维排名分数、时间与标签、1,215 段 clip 的冻结划分、177 段测试 clip 的基准预测，以及包内中文使用说明 |
 | [实验结果汇总（英文）](reports/temporal_smile/README.md) | 数据划分、测试集 ACC 和 macro-F1、固定长度与变长张量对比，以及结果适用范围 |
 | [标注与建模方法（中文）](Temporal_analysis_report.md) | 从人工选帧、片段内配对、个人排序模型到 18 条区域曲线的方法，以及原工作区的数据索引 |
 | [标注、训练与报告源码](experiments/person_smile/) | 人脸追踪调用、标注页模板、分组划分、训练、推理和报告生成 |
 | [单帧分阶段实验](experiments/person_smile/single_frame_phase_experiment_20261105.py) | 比较 3 维和 18 维输入，以及统一和个人分类器 |
 | [完整时序实验](experiments/person_smile/tensor_sequence_experiment_20261109.py) | 用相同分组比较固定 20 点和原始变长序列，训练轨迹核 SVM、双向 GRU 和 TCN |
 
-**本地数据与运行环境。** 原视频位于 `new_dataset/`。追踪帧、FaceTracking、SmileComp 和 VGGFace 权重的位置由[配置示例](experiments/person_smile/config.example.json)说明。逐片标注、冻结划分、特征张量、训练权重和带真人图片的 HTML 保存在研究机器上。复现原实验需要这些本地资产。报告中指向 `output/` 或 Windows 盘符的路径供原工作区定位文件。
+**在新电脑上使用数据包。** 克隆仓库后，在仓库根目录执行下面的 PowerShell 命令。解压后 `output/` 与 `experiments/` 并列，`README_使用说明.md` 列出了 Python 环境、5 个输入文件的用途和校验值。清单里的原视频路径用于追溯，时序分类脚本直接读取包内特征。
+
+```powershell
+Expand-Archive -LiteralPath .\datasets\smile_temporal_inputs_20261110.zip -DestinationPath .
+```
+
+**从视频重新提取分数。** 这一步使用研究机器上的原视频、追踪人脸帧、个人排序权重和参考量表。原视频位于 `new_dataset/`。追踪程序、SmileComp 与 VGGFace 权重的位置见[配置示例](experiments/person_smile/config.example.json)。
 
 **从已有曲线重跑时序实验。** 在具备冻结输入的独立工作副本中，从项目根目录执行下列命令。训练脚本读取单帧实验的 `dataset.npz`、`frame_metadata.json` 和 `protocol.json`、原三分类器的 `feature_manifest.json`，以及区域分类器的基准预测。结果写到 `output/tensor_sequence_classification_20261109/`。训练使用 NumPy、scikit-learn、joblib 和 PyTorch，报告绘图使用 Matplotlib。
 
