@@ -1,0 +1,19 @@
+{
+  "input_root": "E:/Dataset/new_people_clips",
+  "output_root": "E:/Dataset/person_smile_experiment",
+  "tracking_python": "E:/SmileAnnotation/FaceTracking-Smile_Detection/venv/Scripts/python.exe",
+  "tracking_script": "E:/SmileAnnotation/FaceTracking-Smile_Detection/FaceTracking/CUI-pyplot/face_detection.py",
+  "smilecomp_dir": "E:/SmileAnnotation/FaceTracking-Smile_Detection/SmileComp_SiameseNet/Pytorch-Shimonishi",
+  "initial_weights": "E:/SmileAnnotation/FaceTracking-Smile_Detection/SmileComp_SiameseNet/Pytorch-Shimonishi/models/vggface_conv.pth",
+  "fc7_weights": "E:/SmileAnnotation/FaceTracking-Smile_Detection/SmileComp_SiameseNet/Pytorch-Shimonishi/models/vggface.pth",
+  "seed": 20261020,
+  "orientation_threshold": 15,
+  "min_frames": 20,
+  "candidates_per_sequence": 10,
+  "pairs_per_split": {"train": 200, "val": 40, "test": 40},
+  "epochs": 100,
+  "batch_size": 32,
+  "learning_rate": 0.00005,
+  "analysis_frames_per_sequence": 20,
+  "device": "cuda:0"
+}

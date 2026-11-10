@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Monotonic Smile Ranking — Clip Review</title>
+<style>body{font:15px/1.5 system-ui;background:#edf2f7;color:#182b40;margin:0}header{padding:16px 26px;background:#122d48;color:white}main{max-width:1450px;margin:auto;padding:20px}button,select{font:inherit;padding:8px 13px;border-radius:6px;border:1px solid #b3c2d0;background:white;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0}.panel{background:white;border-radius:10px;padding:18px;margin:14px 0}.grid{display:grid;grid-template-columns:38% 1fr;gap:20px}video{width:100%;max-height:370px;background:#111}svg{width:100%;background:#fafcff}.frames{display:flex;gap:10px;overflow:auto}.frame{flex:0 0 120px}.frame img{width:120px;height:120px;object-fit:contain}.small{font-size:12px;color:#53667c}.warn{color:#a74a00}.yes{background:#087d5b;color:white}.no{background:#b13939;color:white}.active{outline:4px solid #eebf4b}#name{overflow-wrap:anywhere}table{border-collapse:collapse}td,th{padding:5px 12px;border-bottom:1px solid #ddd}#pairs{max-height:220px;overflow:auto}.note{max-width:1250px}a{color:#12699c}@media(max-width:900px){.grid{grid-template-columns:1fr}}</style>
+<header><h2 style="margin:0">Monotonic Smile Ranking — Clip Review</h2><div>One export for all people and expression categories · Existing models remain unchanged</div></header>
+<main><div class="panel note">Original intervals, original curves, and original temporal sampling are restored. Select boundaries and additional frames directly on the chart or at the current video time. <b>Accept</b> means the sampled frames are suitable for the assumption <b>later frame = stronger smile</b>. Small curve fluctuations are allowed at your discretion. All within-clip pairs will be proposed; individual pairs are not independently annotated here. <b>Reject</b> excludes this clip from the new ranking dataset only.<br>Original source-group train/validation/test assignments are frozen. More pairs from a long clip do not create more independent clips.</div>
+<div class="bar"><label>Person / category <select id="group"></select></label><label>Show <select id="status"><option value="all">All</option><option value="pending">Not reviewed</option><option value="accept">Accepted</option><option value="reject">Rejected</option></select></label><span id="progress"></span></div>
+<div class="bar"><button id="prev">← Previous</button><select id="clipSelect" style="max-width:630px"></select><button id="next">Next →</button><button id="nextPending">Next unreviewed (all groups)</button></div>
+<section id="content" class="panel"><h3 id="name"></h3><div id="meta"></div><div class="grid"><div><video id="video" controls autoplay muted loop playsinline></video><p><a id="original" target="_blank">Open original video</a></p><div id="time" class="small"></div></div><div><svg id="curve" viewBox="0 0 900 300"></svg><div class="small" id="chartLegend">Original video time (seconds). Grey: raw; blue: original smooth; green/red: training start/end; numbered dots: proposed training frames.</div><div id="metrics"></div></div></div><div class="bar"><label>Training start (source s) <input id="boundStart" type="number" step="0.001" style="width:100px"></label><label>Training end (source s) <input id="boundEnd" type="number" step="0.001" style="width:100px"></label><button id="applyBounds">Apply interval</button><button id="resetBounds">Reset original interval & frames</button></div><p class="small">Original final clip boundaries are unchanged. The green interval is only the new training range. Editing it clears any previous acceptance. Original smoothing only; no automatic 8%–92% tightening and no score-gap filter. Extra frames must remain at least two source frames from other selected frames.</p><div class="bar"><label>Chart click mode <select id="clickMode"><option value="seek">Seek video</option><option value="start">Set training start</option><option value="end">Set training end</option><option value="extra">Add extra frame</option></select></label><button id="startNow">Start = current video frame</button><button id="endNow">End = current video frame</button><button id="extraNow">Add current frame</button><button id="clearExtras">Clear extra frames</button></div><p id="extraInfo"></p><h4>Proposed training frames</h4><div class="frames" id="frames"></div><p id="sampling"></p><p id="warnings" class="warn"></p><details><summary id="pairSummary"></summary><div id="pairs"></div></details><div class="bar"><button id="accept" class="yes">Accept — later frames are stronger (A)</button><button id="reject" class="no">Reject (R)</button><button id="clear">Clear decision</button><label><input id="advance" type="checkbox" checked> Auto-advance</label></div><label>Optional note <input id="note" style="width:65%;padding:8px" placeholder="e.g. a large rebound, weak expression, poor tracking"></label><p id="decision"></p></section>
+<div class="panel"><div class="bar"><button id="export">Export ONE JSON (all groups)</button><label>Import saved JSON <input id="import" type="file" accept=".json"></label></div><p id="saveState"></p><p>Save the exported file in:<br><code>E:\Single_frame_smile\output\monotonic_ranking_review_20261029</code><br>If your browser downloads directly to Downloads, move the single JSON into this folder. Export includes every group, regardless of the current filter.</p><details><summary>Group progress / accepted pair counts</summary><div id="counts"></div></details><p class="small">No training is launched by this page. A complete export is validated before per-model split manifests are prepared. Rejected test clips are not replaced by training clips; inadequate split coverage must be resolved with additional reviewed clips. Old-model-guided selection is not independent validation of smile intensity.</p></div></main>
+<script>
+/* V3: original curve and temporal sampling, optional human bounds and extra frames. */
+function activeRise(record,bounds=null,extras=[],removed=[]) {
+ const start=bounds?bounds[0]:record.final_start_seconds,end=bounds?bounds[1]:record.final_peak_seconds;
+ if(!Number.isFinite(start)||!Number.isFinite(end)||start<record.final_start_seconds-1e-6||end>record.final_peak_seconds+1e-6||start>=end)throw Error('Choose an interval inside the original final clip.');
+ const fs=record.available_frames.filter(f=>f.seconds>=start-1e-6&&f.seconds<=end+1e-6).map(f=>({...f}));
+ let samples=[];
+ if(!record.manual_only&&fs.length>=5){
+  samples=[fs[0]];for(const f of fs.slice(1))if(f.source_frame-samples.at(-1).source_frame>=2&&f.seconds-samples.at(-1).seconds>=.2-1e-5)samples.push(f);
+  if(samples.length>=5){if(fs.at(-1).source_frame!==samples.at(-1).source_frame&&fs.at(-1).source_frame-samples.at(-2).source_frame>=2)samples[samples.length-1]=fs.at(-1);}
+  else{
+   const latest=[0,0,0,0,fs.length-1];let possible=true;
+   for(let j=3;j>=0;j--){const ids=fs.map((f,i)=>i).filter(i=>i<latest[j+1]&&fs[latest[j+1]].source_frame-fs[i].source_frame>=2);if(!ids.length){possible=false;break;}latest[j]=ids.at(-1);}
+   samples=[];if(possible)for(let j=0;j<5;j++){const target=fs[0].seconds+(fs.at(-1).seconds-fs[0].seconds)*j/4;const opts=fs.filter((f,i)=>i<=latest[j]&&(!samples.length||f.source_frame-samples.at(-1).source_frame>=2));samples.push(opts.reduce((a,b)=>Math.abs(a.seconds-target)<=Math.abs(b.seconds-target)?a:b));}
+  }
+ }
+ if(record.manual_only&&bounds&&fs.length){samples=[fs[0]];if(fs.length>1)samples.push(fs.at(-1));}
+ const extraIds=[...new Set(extras)].sort((a,b)=>a-b);
+ for(const id of extraIds){const f=fs.find(x=>x.source_frame===id);if(!f)throw Error('An extra frame is outside the interval or has no tracked face. Remove it or widen the interval.');if(!samples.some(x=>x.source_frame===id))samples.push(f);}
+ const removedIds=[...new Set(removed)].sort((a,b)=>a-b);
+ samples=samples.filter(f=>!removedIds.includes(f.source_frame));
+ samples.sort((a,b)=>a.source_frame-b.source_frame);
+ const gaps=samples.slice(1).some((f,i)=>f.source_frame-samples[i].source_frame<2);
+ const curve=record.curve.map(p=>{const {active_score,...q}=p;return q;});
+ const segment=curve.filter(p=>p.seconds>=start-1e-6&&p.seconds<=end+1e-6);let drop=0;for(let i=1;i<segment.length;i++)drop+=Math.max(0,segment[i-1].smoothed_score-segment[i].smoothed_score);
+ const gain=segment.length?segment.at(-1).smoothed_score-segment[0].smoothed_score:0,pairs=[];
+ for(let gap=1;gap<samples.length;gap++)for(let i=0;i+gap<samples.length;i++)pairs.push({first:i+1,second:i+gap+1,earlier_frame:samples[i].source_frame,later_frame:samples[i+gap].source_frame,stronger:'later',old_score_increases:record.manual_only?null:samples[i+gap].smoothed_score>samples[i].smoothed_score});
+ return {...record,curve,sample_frames:samples,pairs,start_seconds:start,peak_seconds:end,start_frame:Math.abs(start-record.final_start_seconds)<1e-6?record.final_start_frame:(fs[0]?.source_frame??record.final_start_frame),peak_frame:Math.abs(end-record.final_peak_seconds)<1e-6?record.final_peak_frame:(fs.at(-1)?.source_frame??record.final_peak_frame),onset_seconds:record.original_onset_seconds,
+  manual_bounds:bounds,extra_frames:extraIds,removed_frames:removedIds,eligible:record.manual_only?samples.length>=2&&!gaps:samples.length>=5&&!gaps&&gain>0,net_gain:record.manual_only?null:gain,total_downward_change:record.manual_only?null:drop,strict_nondecreasing:record.manual_only?null:drop===0,pair_score_warnings:record.manual_only?0:pairs.filter(p=>!p.old_score_increases).length,
+  sampling_note:record.manual_only?'Manual timeline nodes only; no ranking model or score.':gaps?'Extra frame is adjacent to another sample (<2 source frames). Remove that extra frame before acceptance.':'Original temporal sampling (~0.2 s; short clips: five frames >=2 source frames apart) + manual extra frames'};
+}
+if(typeof module!=='undefined')module.exports={activeRise};
+
+const DATA=__PAYLOAD__;
+const $=id=>document.getElementById(id),records=DATA.records,byId=Object.fromEntries(records.map(r=>[r.id,r]));
+const key='monotonic-review-'+DATA.dataset_id,groupKey=r=>r.person+' / '+r.label,groups=[...new Set(records.map(groupKey))];
+let decisions={},priorDecisions={},drafts={},currentId=null,visible=[];
+const validDecision=(id,d)=>!!byId[id]&&d&&['accept','reject'].includes(d.state);
+try{const x=JSON.parse(localStorage.getItem(key)||'{}');for(const [id,d] of Object.entries(x))if(validDecision(id,d))decisions[id]=d;}catch(e){$('saveState').textContent='Browser storage could not be read. Import your JSON backup if available.'}
+try{const original=JSON.parse(localStorage.getItem('monotonic-review-'+DATA.original_dataset_id)||'{}');for(const [id,d] of Object.entries(original))if(byId[id]&&!decisions[id])decisions[id]=d;}catch(e){}
+try{const previous=JSON.parse(localStorage.getItem('monotonic-review-'+DATA.previous_dataset_id)||'{}');for(const [id,d] of Object.entries(previous)){if(!byId[id])continue;if(decisions[id]?.updated_at>=d.updated_at)continue;if(d.state==='reject')decisions[id]=d;else{delete decisions[id];priorDecisions[id]=d;}}}catch(e){}
+try{priorDecisions={...priorDecisions,...JSON.parse(localStorage.getItem(key+'-prior')||'{}')}}catch(e){}
+function restoreBounds(){for(const [id,d] of Object.entries(decisions)){if(d.bounds&&byId[id]){const next=activeRise(byId[id],d.bounds,d.extra_frames||[],d.removed_frames||[]);Object.assign(byId[id],next);}}}
+try{drafts=JSON.parse(localStorage.getItem(key+'-drafts')||'{}');for(const [id,d] of Object.entries(drafts)){if(byId[id])Object.assign(byId[id],activeRise(byId[id],d.bounds,d.extra_frames||[],d.removed_frames||[]));}}catch(e){$('saveState').textContent='Some saved manual intervals could not be loaded.';}
+restoreBounds();
+function persist(){try{localStorage.setItem(key,JSON.stringify(decisions));localStorage.setItem(key+'-drafts',JSON.stringify(drafts));localStorage.setItem(key+'-prior',JSON.stringify(priorDecisions));$('saveState').textContent='Progress saved in this browser. Export JSON before moving to another browser.';}catch(e){$('saveState').textContent='Browser storage unavailable: export JSON before closing.';}updateCounts();}
+for(const g of groups){const o=new Option(g,g);$('group').add(o);}
+function updateCounts(){
+ const done=Object.keys(decisions).length;$('progress').textContent=`Reviewed ${done} / ${records.length}`;
+ let text='<table><tr><th>Group</th><th>Reviewed</th><th>Accepted</th><th>Proposed accepted pairs</th><th>Accepted train / val / test clips</th></tr>';
+ for(const g of groups){const a=records.filter(r=>groupKey(r)===g),yes=a.filter(r=>decisions[r.id]?.state==='accept');text+=`<tr><td>${g}</td><td>${a.filter(r=>decisions[r.id]).length}/${a.length}</td><td>${yes.length}</td><td>${yes.reduce((s,r)=>s+r.pairs.length,0)}</td><td>${['train','val','test'].map(s=>yes.filter(r=>r.split===s).length).join(' / ')}</td></tr>`;}
+ $('counts').innerHTML=text+'</table>';
+}
+function refresh(preferred){
+ visible=records.filter(r=>groupKey(r)===$('group').value&&($('status').value==='all'||($('status').value==='pending'?!decisions[r.id]:decisions[r.id]?.state===$('status').value)));
+ $('clipSelect').replaceChildren();visible.forEach((r,i)=>$('clipSelect').add(new Option(`${i+1}/${visible.length} · ${decisions[r.id]?.state||'pending'} · ${r.filename}`,r.id)));
+ currentId=visible.some(r=>r.id===preferred)?preferred:visible[0]?.id;
+ $('content').hidden=!currentId;$('prev').disabled=$('next').disabled=!currentId;
+ if(currentId){$('clipSelect').value=currentId;render();}else{$('video').pause();$('video').removeAttribute('src');$('video').load();}
+ updateCounts();
+}
+function render(){
+ const r=byId[currentId],d=decisions[currentId];$('name').textContent=groupKey(r)+' — '+r.filename;
+ $('meta').textContent=(r.manual_only?'MANUAL TIMELINE — no ranking model or scores. ':'')+(r.previously_excluded?'ADDED CANDIDATE — previously excluded: '+r.previous_exclusion_reason+' (ranking review only). ':'')+`Average FPS: ${r.average_fps?.toFixed(3)??'unknown'} · Source interval ${r.start_seconds.toFixed(3)}–${r.peak_seconds.toFixed(3)} s · Frozen split: ${r.split} · Group: ${r.source_group}`;
+ $('video').src=r.original_url;$('video').onloadedmetadata=()=>{$('video').currentTime=r.start_seconds;$('video').play().catch(()=>{});};$('boundStart').value=r.start_seconds.toFixed(6);$('boundEnd').value=r.peak_seconds.toFixed(6);$('original').href=r.original_url;
+ $('frames').replaceChildren();r.sample_frames.forEach((f,i)=>{const div=document.createElement('div');div.className='frame';const img=document.createElement('img');img.src=f.url;img.loading='lazy';const txt=document.createElement('div');txt.className='small';txt.textContent=`${i+1} · frame ${f.source_frame} · ${(f.seconds-r.start_seconds).toFixed(3)} s into clip · ${r.manual_only?'manual node':'score '+f.smoothed_score.toFixed(3)}`;div.append(img,txt);const remove=document.createElement('button');remove.textContent='Remove frame';remove.onclick=e=>{e.stopPropagation();updateSelection([r.start_seconds,r.peak_seconds],(r.extra_frames||[]).filter(n=>n!==f.source_frame),[...(r.removed_frames||[]),f.source_frame]);};div.append(remove);div.onclick=()=>{$('video').currentTime=f.seconds;$('video').pause();};$('frames').append(div);});
+ $('extraInfo').textContent='Extra source frames: '+((r.extra_frames||[]).join(', ')||'none')+' · Removed source frames: '+((r.removed_frames||[]).join(', ')||'none');$('sampling').textContent=`${r.sample_frames.length} frames → ${r.pairs.length} pairs. ${r.sampling_note}. Click a face to seek the video.`;
+ $('warnings').textContent=r.manual_only?'Choose start/end and add intermediate frames. Accept confirms your intended temporal strength ordering; there are no model scores.':(!r.eligible?'Automatic sampling check not met. You may still accept based on your visual review. ':'')+(r.pair_score_warnings?`${r.pair_score_warnings} proposed pairs have non-increasing OLD scores. Inspect the faces before accepting the later-is-stronger assumption.`:(r.pairs.length?'All proposed pairs have increasing old scores.':'No pairs currently available; your acceptance will still be saved.'));
+ $('metrics').textContent=r.manual_only?'No curve available. The horizontal line represents time only.':`Net score change: ${r.net_gain.toFixed(3)} · Total downward variation: ${r.total_downward_change.toFixed(3)} · Strictly nondecreasing: ${r.strict_nondecreasing?'yes':'no (human decision allowed)'}`;
+ $('pairSummary').textContent=`Inspect ${r.pairs.length} proposed pairs (12, 23, …, then 13, 24, …)`;
+ $('pairs').innerHTML='<table><tr><th>Pair</th><th>Assumed stronger frame</th><th>Old scores agree?</th></tr>'+r.pairs.map(p=>`<tr><td>${p.first}–${p.second}</td><td>${p.second}</td><td>${r.manual_only?'Not available':p.old_score_increases?'yes':'NO / tie'}</td></tr>`).join('')+'</table>';
+ $('chartLegend').textContent=r.manual_only?'Time axis only. Choose a click mode to set Start / End or add a middle node. No model score is displayed.':'Original video time. Grey: raw score; blue: original smooth; green/red: training bounds; numbered dots: selected frames.';$('accept').disabled=false;$('accept').classList.toggle('active',d?.state==='accept');$('reject').classList.toggle('active',d?.state==='reject');$('note').value=d?.note||'';$('decision').textContent=d?'Decision: '+d.state:(priorDecisions[currentId]?'Previous acceptance retained for reference — interval/samples changed; please confirm again.':'Not reviewed');draw(r);
+}
+function draw(r){
+ if(r.manual_only){const end=r.final_peak_seconds,x=t=>55+800*t/Math.max(.001,end);let h='<line x1="55" x2="855" y1="150" y2="150" stroke="#2775a8" stroke-width="3"/>';
+ for(let i=0;i<=4;i++){let t=end*i/4;h+=`<line x1="${x(t)}" x2="${x(t)}" y1="145" y2="155" stroke="#2775a8"/><text x="${x(t)}" y="185" text-anchor="middle" font-size="13">${t.toFixed(2)} s</text>`;}
+ if(r.manual_bounds){h+=`<rect x="${x(r.start_seconds)}" y="110" width="${x(r.peak_seconds)-x(r.start_seconds)}" height="80" fill="#15976a" opacity=".09"/><text x="${x(r.start_seconds)}" y="95" fill="#168b63">Start</text><text x="${x(r.peak_seconds)}" y="95" fill="#cf4141">End</text>`;}
+ r.sample_frames.forEach((f,i)=>h+=`<circle cx="${x(f.seconds)}" cy="150" r="6" fill="#ed8626"/><text x="${x(f.seconds)}" y="130" text-anchor="middle" font-size="13">${i+1}</text>`);
+ h+='<text x="450" y="240" text-anchor="middle">Timeline only — click to select real tracked frames</text>';$('curve').innerHTML=h;return;}
+ 
+ const t0=r.curve[0].seconds,t1=r.curve.at(-1).seconds,x=t=>55+800*(t-t0)/Math.max(.001,t1-t0),y=s=>245-200*s;
+ let h='';for(let i=0;i<=4;i++){const v=i/4;h+=`<line x1="55" x2="855" y1="${y(v)}" y2="${y(v)}" stroke="#e1e7ee"/><text x="15" y="${y(v)+4}" font-size="12">${v}</text>`;const t=t0+(t1-t0)*v;h+=`<text x="${x(t)}" y="275" font-size="12" text-anchor="middle">${t.toFixed(2)} s</text>`;}
+ h+=`<rect x="${x(r.start_seconds)}" y="35" width="${Math.max(0,x(r.peak_seconds)-x(r.start_seconds))}" height="210" fill="#19946a" opacity=".07"/>`;
+ for(const [field,color,width] of [['raw_score','#adb9c5',1],['smoothed_score','#1d70a5',2.5]])h+=`<polyline fill="none" stroke="${color}" stroke-width="${width}" points="${r.curve.map(p=>`${x(p.seconds)},${y(p[field])}`).join(' ')}"/>`;
+ for(const [t,color,label] of [[r.start_seconds,'#168b63','Train start'],[r.onset_seconds,'#d58d12','Old onset'],[r.peak_seconds,'#cf4141','Train end']])if(t!==null)h+=`<line x1="${x(t)}" x2="${x(t)}" y1="35" y2="245" stroke="${color}" stroke-dasharray="5"/><text x="${x(t)}" y="${label==='Old onset'?30:15}" font-size="12" fill="${color}">${label}</text>`;
+ r.sample_frames.forEach((f,i)=>{h+=`<circle cx="${x(f.seconds)}" cy="${y(f.smoothed_score)}" r="4" fill="#e87924"/><text x="${x(f.seconds)}" y="${y(f.smoothed_score)-8}" font-size="11" text-anchor="middle">${i+1}</text>`;});$('curve').innerHTML=h;
+}
+function move(delta){const i=visible.findIndex(r=>r.id===currentId);if(visible[i+delta]){currentId=visible[i+delta].id;$('clipSelect').value=currentId;render();}}
+function decide(state){if(!currentId)return;const id=currentId,next=visible[visible.findIndex(r=>r.id===id)+1]?.id;decisions[id]={state,manual_override:state==='accept'&&!byId[id].eligible,automatic_sampling_check_passed:byId[id].eligible,bounds:[byId[id].start_seconds,byId[id].peak_seconds],extra_frames:byId[id].extra_frames||[],removed_frames:byId[id].removed_frames||[],note:$('note').value,updated_at:new Date().toISOString()};persist();refresh($('advance').checked?next:id);}
+function nextPending(){const start=records.findIndex(r=>r.id===currentId);for(let j=1;j<=records.length;j++){const r=records[(start+j)%records.length];if(!decisions[r.id]){$('group').value=groupKey(r);$('status').value='pending';refresh(r.id);return;}}alert('All clips reviewed. Export one JSON for all groups.');}
+$('group').onchange=$('status').onchange=()=>refresh();$('clipSelect').onchange=()=>{currentId=$('clipSelect').value;render();};$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1);$('nextPending').onclick=nextPending;
+$('accept').onclick=()=>decide('accept');$('reject').onclick=()=>decide('reject');$('clear').onclick=()=>{delete decisions[currentId];persist();refresh(currentId);};$('note').onchange=()=>{if(decisions[currentId]){decisions[currentId].note=$('note').value;persist();}};
+$('video').ontimeupdate=()=>{const r=byId[currentId];if(r&&$('video').currentTime>=r.peak_seconds){$('video').currentTime=r.start_seconds;}if(r)$('time').textContent=`Training time ${Math.max(0,$('video').currentTime-r.start_seconds).toFixed(3)} s / source time ${$('video').currentTime.toFixed(3)} s`;};
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;if(e.key.toLowerCase()==='a')decide('accept');if(e.key.toLowerCase()==='r')decide('reject');if(e.key==='ArrowRight')move(1);if(e.key==='ArrowLeft')move(-1);});
+function makeExport(){return {schema_version:3,task:DATA.task,dataset_id:DATA.dataset_id,exported_at:new Date().toISOString(),complete:records.every(r=>decisions[r.id]),total:records.length,policy:DATA.policy,decisions,prior_decisions:priorDecisions,drafts,files:records.map(r=>({id:r.id,person:r.person,label:r.label,source_video:r.source_video,source_sha256:r.source_sha256,group_id:r.group_id,split:r.split,start_frame:r.start_frame,peak_frame:r.peak_frame,start_seconds:r.start_seconds,peak_seconds:r.peak_seconds,decision:decisions[r.id]?.state||null,sample_frames:r.sample_frames,pairs:r.pairs}))};}
+$('export').onclick=()=>{const p=makeExport(),url=URL.createObjectURL(new Blob([JSON.stringify(p,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='monotonic_ranking_decisions_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);$('saveState').textContent=p.complete?'Complete export downloaded. Save it in the directory shown below.':'Partial progress exported; unreviewed clips remain. Import this file later to continue.';};
+$('import').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(d.task!==DATA.task)throw Error('Wrong task');if([DATA.previous_dataset_id,DATA.original_dataset_id].includes(d.dataset_id)){for(const [id,v] of Object.entries(d.decisions||{})){if(!byId[id])throw Error('Unknown clip');if(decisions[id])continue;if(v.state==='reject')decisions[id]=v;else priorDecisions[id]=v;}persist();refresh(currentId);alert('Old rejections imported. Old acceptances require confirmation of the new interval.');return;}if(d.dataset_id!==DATA.dataset_id)throw Error('Wrong dataset/version');for(const [id,v] of Object.entries(d.decisions||{}))if(!validDecision(id,v))throw Error('Invalid decision');decisions={...decisions,...d.decisions};priorDecisions={...priorDecisions,...(d.prior_decisions||{})};drafts={...drafts,...(d.drafts||{})};for(const [id,v] of Object.entries(drafts))if(byId[id])Object.assign(byId[id],activeRise(byId[id],v.bounds,v.extra_frames||[],v.removed_frames||[]));restoreBounds();persist();refresh(currentId);}catch(err){alert('Import failed: '+err.message);}};
+function updateSelection(bounds,extras,removed=byId[currentId].removed_frames||[]){try{const r=byId[currentId],next=activeRise(r,bounds,extras,removed);if(decisions[currentId])priorDecisions[currentId]=decisions[currentId];delete decisions[currentId];Object.assign(r,next);drafts[currentId]={bounds:[r.start_seconds,r.peak_seconds],extra_frames:r.extra_frames,removed_frames:r.removed_frames};persist();render();}catch(e){alert(e.message);}}
+function nearestFace(time){const r=byId[currentId];return r.available_frames.reduce((a,b)=>Math.abs(a.seconds-time)<=Math.abs(b.seconds-time)?a:b);}
+function act(mode,time){const r=byId[currentId],f=nearestFace(time);if(mode==='seek'){$('video').currentTime=f.seconds;$('video').pause();return;}if(mode==='start')updateSelection([f.seconds,r.peak_seconds],(r.extra_frames||[]).filter(n=>n>=f.source_frame));if(mode==='end')updateSelection([r.start_seconds,f.seconds],(r.extra_frames||[]).filter(n=>n<=f.source_frame));if(mode==='extra')updateSelection([r.start_seconds,r.peak_seconds],[...(r.extra_frames||[]),f.source_frame],(r.removed_frames||[]).filter(n=>n!==f.source_frame));}
+$('curve').style.cursor='crosshair';$('curve').onclick=e=>{const r=byId[currentId],rect=$('curve').getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width*900;const t=r.curve[0].seconds+(Math.max(55,Math.min(855,x))-55)/800*(r.curve.at(-1).seconds-r.curve[0].seconds);act($('clickMode').value,t);};
+$('startNow').onclick=()=>act('start',$('video').currentTime);$('endNow').onclick=()=>act('end',$('video').currentTime);$('extraNow').onclick=()=>act('extra',$('video').currentTime);
+$('clearExtras').onclick=()=>updateSelection([byId[currentId].start_seconds,byId[currentId].peak_seconds],[]);
+$('applyBounds').onclick=()=>updateSelection([Number($('boundStart').value),Number($('boundEnd').value)],byId[currentId].extra_frames||[]);
+$('resetBounds').onclick=()=>updateSelection(null,[],[]);
+refresh();
+</script><script>
+/* UI extension: does not replace inventory ID, decisions, drafts, or storage keys. */
+(function(){
+ const target=280;
+ const box=document.createElement('section');box.className='panel';box.id='trainingProgress';
+ box.innerHTML='<h3>Training readiness — 280 total valid pairs per person / category</h3><p>Total = training + validation + test pairs from accepted clips. The three splits remain independent. Pairs less than two source frames apart are excluded from the valid count. Train requires ≥2 source groups; validation and test each require ≥1 independent source group.</p><div id="trainingCounts"></div><p id="exportReminder"></p><p><b>Export ONE JSON</b> when ready. The local worker detects the export in this review folder or your Downloads folder, prepares independent image datasets, and trains ready models sequentially. Unreviewed groups may remain pending.</p><div id="workerStatus">Checking local training worker…</div>';
+ $('content').before(box);
+ const validPairs=r=>r.pairs.filter(p=>p.later_frame-p.earlier_frame>=2);
+ let oldReady=new Set(),initialized=false,groupedTraining=null;
+ function readiness(){
+  if(groupedTraining){let h='<table><tr><th>Person / category</th><th>Total pairs</th><th>Train</th><th>Val</th><th>Test</th><th>Status</th></tr>';for(const [g,v] of Object.entries(groupedTraining.groups)){if(!v.splits)continue;h+=`<tr><td>${g}</td><td>${v.pairs}</td><td>${v.splits.train.pairs}</td><td>${v.splits.val.pairs}</td><td>${v.splits.test.pairs}</td><td>${v.state}</td></tr>`;}$('trainingCounts').innerHTML=h+'</table>';$('exportReminder').textContent='Current training uses the frozen accepted-only export with newly assigned 70/15/15 source-group splits. REN excluded. Original per-clip review split labels are historical. New annotation edits do not change this running batch.';return;}
+
+  const readyGroups=[];let html='<table><tr><th>Person / category</th><th>Total pairs / 280</th><th>Train pairs</th><th>Val pairs</th><th>Test pairs</th><th>Source groups T/V/T</th><th>Status</th></tr>';
+  for(const g of groups){
+   const selected=records.filter(r=>groupKey(r)===g&&decisions[r.id]?.state==='accept');
+   const count=s=>selected.filter(r=>r.split===s).reduce((n,r)=>n+validPairs(r).length,0);
+   const gc=s=>new Set(selected.filter(r=>r.split===s&&validPairs(r).length).map(r=>r.group_id)).size;
+   const n=count('train')+count('val')+count('test'),ok=n>=target&&gc('train')>=2&&gc('val')>=1&&gc('test')>=1;
+   if(n>=target)readyGroups.push(g);
+   html+=`<tr><td>${g}</td><td><b>${n} / ${target}</b></td><td>${count('train')}</td><td>${count('val')}</td><td>${count('test')}</td><td>${['train','val','test'].map(gc).join(' / ')}</td><td>${ok?'Ready: export to train':n>=target?'280 reached; add missing independent split data':'Keep reviewing'}</td></tr>`;
+  }
+  $('trainingCounts').innerHTML=html+'</table>';
+  $('exportReminder').textContent=readyGroups.length?'280 total pairs reached: '+readyGroups.join(', ')+'. Export your decisions; the worker will train groups with independent validation/test data.':'No group has reached 280 total valid pairs yet.';
+  const newGroups=readyGroups.filter(g=>!oldReady.has(g));
+  if(initialized&&newGroups.length)alert('280 TOTAL valid pairs reached: '+newGroups.join(', ')+'. Export one JSON to save the snapshot and queue eligible models.');
+  oldReady=new Set(readyGroups);initialized=true;
+ }
+ const originalCounts=updateCounts;updateCounts=function(){originalCounts();readiness();};readiness();
+ window.onTrainingStatus=data=>{
+  if(data.run&&Object.values(data.groups||{}).some(v=>v.splits)){groupedTraining=data;readiness();}
+  const div=$('workerStatus');div.replaceChildren();const title=document.createElement('p');title.textContent=`Local worker: ${data.worker||'unknown'} · PID ${data.worker_pid||'?'} · Updated ${data.updated_at||''}`;div.append(title);
+  if(data.last_export_error){const e=document.createElement('p');e.className='warn';e.textContent='Export check failed: '+data.last_export_error.error;div.append(e);}
+  for(const [name,v] of Object.entries(data.groups||{})){const p=document.createElement('p');p.textContent=name+': '+v.state+(v.output?' · '+v.output:'')+(v.error?' · '+v.error:'');div.append(p);}
+ };
+ function poll(){const s=document.createElement('script');s.src='training_status.js?v='+Date.now();s.onload=()=>s.remove();s.onerror=()=>{s.remove();$('workerStatus').textContent='Worker status unavailable. Run start_auto_training.ps1 in this folder.';};document.body.append(s);}
+ poll();setInterval(poll,10000);
+ // A future local page version can request a safe reload. Persist the current note and selection first.
+ const viewKey=key+'-view';
+ try{const v=JSON.parse(localStorage.getItem(viewKey)||'null');if(v&&byId[v.id]){$('group').value=groupKey(byId[v.id]);$('status').value='all';refresh(v.id);}}catch(e){}
+ const saveView=()=>{try{localStorage.setItem(viewKey,JSON.stringify({id:currentId}));if(currentId&&decisions[currentId])decisions[currentId].note=$('note').value;persist();}catch(e){}};
+ window.addEventListener('beforeunload',saveView);
+ let loadedVersion=null;
+ window.onReviewVersion=version=>{if(loadedVersion===null){loadedVersion=version;return;}if(version!==loadedVersion){saveView();location.reload();}};
+ setInterval(()=>{const s=document.createElement('script');s.src='review_version.js?v='+Date.now();s.onload=s.onerror=()=>s.remove();document.body.append(s);},10000);
+})();
+
+</script></html>

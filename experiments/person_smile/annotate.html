@@ -1,0 +1,22 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8">
+<title>Smile Ranking 人工标注</title>
+<style>body{font:18px system-ui;max-width:900px;margin:30px auto;background:#f5f6f8}main{display:flex;gap:32px}img{width:300px;height:300px;object-fit:contain}button{padding:12px;margin:8px}p{line-height:1.6}</style>
+<h1>笑容强度比较</h1><p>判断哪张脸的笑容更强。不要判断哪张更像某种笑容，也不要根据图片先后顺序猜测。看不清或遮挡请选择“无法使用”。</p>
+<p id="status"></p><main><div>A<br><img id="a"></div><div>B<br><img id="b"></div></main>
+<button onclick="mark('1')">A 更强（←）</button><button onclick="mark('-1')">B 更强（→）</button>
+<button onclick="mark('0')">相近 / 无法区分（=）</button><button onclick="mark('discard')">无法使用</button><br>
+<button onclick="move(-1)">上一对</button><button onclick="move(1)">下一对</button><button onclick="download()">导出 annotations.csv</button>
+<p>导出后放到本页面所在文件夹。相近和无法使用会保留在审计中，不进入二分类训练。可导入之前导出的文件继续标注：<input type="file" id="restore" accept=".csv"></p>
+<script>
+const pairs=/*PAIR_DATA*/;
+let index=0;
+const key='smile-ranking:'+location.href;
+try{const saved=JSON.parse(localStorage.getItem(key)||'{}');for(const p of pairs)if(['1','-1','0','discard'].includes(saved[p.pair_id]))p.label=saved[p.pair_id];}catch(e){}
+function show(){const p=pairs[index];document.getElementById('a').src='images/'+p.image1;document.getElementById('b').src='images/'+p.image2;document.getElementById('status').textContent=`${index+1}/${pairs.length} · 已完成 ${pairs.filter(x=>x.label!=='').length} · 当前选择：${p.label||'未标注'}`;}
+function move(n){index=Math.max(0,Math.min(pairs.length-1,index+n));show();}
+function mark(v){pairs[index].label=v;try{localStorage.setItem(key,JSON.stringify(Object.fromEntries(pairs.map(p=>[p.pair_id,p.label]))));}catch(e){}move(1);}
+function download(){const rows=['pair_id,image1,image2,label',...pairs.map(p=>[p.pair_id,p.image1,p.image2,p.label].join(','))];const u=URL.createObjectURL(new Blob(['\ufeff'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='annotations.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+document.getElementById('restore').onchange=async e=>{try{const lines=(await e.target.files[0].text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/).slice(1).map(x=>x.split(','));const map=new Map(pairs.map(p=>[p.pair_id,p]));for(const [id,a,b,v] of lines){const p=map.get(id);if(!p||p.image1!==a||p.image2!==b||!['','1','-1','0','discard'].includes(v))throw Error('文件不属于此任务或标签无效');}for(const [id,a,b,v] of lines)map.get(id).label=v;show();}catch(err){alert(err.message);}};
+document.onkeydown=e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowLeft')mark('1');if(e.key==='ArrowRight')mark('-1');if(e.key==='=')mark('0');};
+show();
+</script></html>

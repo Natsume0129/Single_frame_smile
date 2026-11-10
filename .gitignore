@@ -1,3 +1,19 @@
 data/
 *.rar
 .venv/
+
+# Local study inputs, participant review exports and generated experiment runs
+/new_dataset/
+/output/
+/outputs/
+/expression_review/
+/tmp/
+/.codex/
+__pycache__/
+*.py[cod]
+*.pth
+*.pt
+*.ckpt
+*.joblib
+.env
+.env.local

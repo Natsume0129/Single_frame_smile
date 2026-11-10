@@ -1,5 +1,26 @@
 
-# Smile Annotation & Data Preparation Pipeline
+# 笑容强度排序与时序分类
+
+这个项目研究同一个人表现 polite、bitter 和 true smile 时，笑容从 onset 到 peak 的变化。先用参与者自己的排序模型给每一张有效人脸帧评分，再用同一批片段比较单帧分类、曲线摘要分类和完整时序分类。当前分类实验覆盖五名已知参与者，使用 1,215 段人工确认的片段。
+
+| 从哪里开始 | 内容 |
+|---|---|
+| [实验结果汇总（英文）](reports/temporal_smile/README.md) | 数据划分、测试集 ACC 和 macro-F1、固定长度与变长张量对比，以及结果适用范围 |
+| [标注与建模方法（中文）](Temporal_analysis_report.md) | 从人工选帧、片段内配对、个人排序模型到 18 条区域曲线的方法，以及原工作区的数据索引 |
+| [标注、训练与报告源码](experiments/person_smile/) | 人脸追踪调用、标注页模板、分组划分、训练、推理和报告生成 |
+| [单帧分阶段实验](experiments/person_smile/single_frame_phase_experiment_20261105.py) | 比较 3 维和 18 维输入，以及统一和个人分类器 |
+| [完整时序实验](experiments/person_smile/tensor_sequence_experiment_20261109.py) | 用相同分组比较固定 20 点和原始变长序列，训练轨迹核 SVM、双向 GRU 和 TCN |
+
+**本地数据与运行环境。** 原视频位于 `new_dataset/`。追踪帧、FaceTracking、SmileComp 和 VGGFace 权重的位置由[配置示例](experiments/person_smile/config.example.json)说明。逐片标注、冻结划分、特征张量、训练权重和带真人图片的 HTML 保存在研究机器上。复现原实验需要这些本地资产。报告中指向 `output/` 或 Windows 盘符的路径供原工作区定位文件。
+
+**从已有曲线重跑时序实验。** 在具备冻结输入的独立工作副本中，从项目根目录执行下列命令。训练脚本读取单帧实验的 `dataset.npz`、`frame_metadata.json` 和 `protocol.json`、原三分类器的 `feature_manifest.json`，以及区域分类器的基准预测。结果写到 `output/tensor_sequence_classification_20261109/`。训练使用 NumPy、scikit-learn、joblib 和 PyTorch，报告绘图使用 Matplotlib。
+
+```powershell
+python experiments/person_smile/tensor_sequence_experiment_20261109.py
+python experiments/person_smile/render_tensor_sequence_report_20261109.py
+```
+
+## 早期工作流：单帧数据准备与标注
 
 本项目用于构建**基于单帧正脸图像的笑容状态分类数据集**，包含从视频中抽取数据、人工标注、以及后续数据筛选与采样的完整流程。
 
